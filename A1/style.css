@@ -505,7 +505,7 @@ div[class="myBody contact"] p.emailLink{
     padding-right: 0;
 } */
 
-@media screen and (min-width: 480px){
+@media only screen and (width > 480px){
     div[class="myBody contact"] form{
         position: absolute;
         top: calc(128px + 200px + 5em + 2em);
@@ -582,7 +582,7 @@ div[class="myBody contact"] p.emailLink{
     }
 
     div[class="myBody contact"] form ul li input#consent{
-        transform: scale(1.5);
+        transform: scale(1.5, 1.5);
         width: 10vw;
     
     }
@@ -651,7 +651,7 @@ div[class="myBody contact"] form ul li input[type="submit"]:hover{
     text-decoration: underline;
 }
 
-@media screen and (max-width: 480px){
+@media only screen and (max-width: 480px){
     div[class="myBody contact"] form{
         position: absolute;
         top: calc(128px + 200px + 5em + 2em);
