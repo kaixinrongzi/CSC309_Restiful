@@ -190,8 +190,10 @@ header ul{
     /* width: 100vw; */
     /* height: 3em; */
     display: flex; 
+    flex-direction: row;
     justify-content: center;
     align-items: center; 
+    align-content: center;
     height: 3rem;
     position: absolute;
     /* top: 95%; */
@@ -206,10 +208,6 @@ header ul{
 
 footer p{
     color: white;
-    position: absolute;
-    margin: 0px;
-    padding: 0px;
-    line-height: 100%;
 }
 
 div[class="myBody index"] img.portrait{
@@ -289,23 +287,29 @@ div[class="myBody index"] p.intro{
     color: #333333;
 }
 
-div[class="myBody index"] a{
+/* div[class="myBody index"] a{
     position: absolute;
     top: calc(128px + 200px + 15px + 47px + 15px + 27px + 30px);
     bottom: auto;
     text-decoration: none;
+} */
+
+div[class="myBody index"] form{
+    position: absolute;
+    top: calc(128px + 200px + 15px + 47px + 15px + 27px + 30px);
+    bottom: auto;
 }
 
-
-div[class="myBody index"] button{
-    width: 122px;
-    height: 38px;
+div[class="myBody index"] form input[type="submit"]{
+   
     /* Padding: 9px, 19px, 11px, 20px; */
     /* position: absolute; */
     /* top: calc(128px + 200px + 15px + 47px + 15px + 27px + 30px); */
     /* bottom: auto;
     left: auto;
     right: auto; */
+    width: 10em;
+    height: 3em;
     background: #FFFFFF;
     border: 2px solid #007EA8;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -321,7 +325,7 @@ div[class="myBody index"] button{
     color: #007EA8;
 }
 
-div[class="myBody index"] button:hover{
+div[class="myBody index"] form input[type="submit"]:hover{
     text-decoration: underline ;
 }
 
@@ -369,7 +373,7 @@ div[class="myBody about"] p.one{
     line-height: 22px;
 } */
 
-div[class="myBody about"] select#mycourselist{
+/* div[class="myBody about"] select#mycourselist{
     position: absolute;
     top: 190px;
     font-family: 'Inter';
@@ -381,7 +385,22 @@ div[class="myBody about"] select#mycourselist{
     border: #BBBBBB;
     background-color: #BBBBBB;
 
+} */
+
+div[class="myBody about"] details{
+    position: absolute;
+    top: 190px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    text-decoration: none;
 }
+
+div[class="myBody about"] details summary{
+    list-style: none;
+}
+
 
 div[class="myBody about"] p.three{
     position: absolute;
@@ -540,6 +559,11 @@ div[class="myBody contact"] p.emailLink{
         margin-bottom: 0.5em;
     }
 
+    div[class="myBody contact"] form ul li textarea[placeholder="Enter your feedback here"]{
+        height: 6em;
+        width: 60vw;
+    }
+
     div[class="myBody contact"] form ul li#file{
         /* margin-top: 0.4em; */
         /* width: 85vw; */
@@ -548,7 +572,7 @@ div[class="myBody contact"] p.emailLink{
         height: 3em;
     }
 
-    div[class="myBody contact"] form ul li span:not(.agreeToReceiveEmail){
+    div[class="myBody contact"] form ul li label:not(.agreeToReceiveEmail){
         width: 10vw;
         word-wrap: break-word; 
         /* border: 1px solid red; */
@@ -557,13 +581,13 @@ div[class="myBody contact"] p.emailLink{
         justify-content: flex-end;
     }
 
-    div[class="myBody contact"] form ul li input[type="checkbox"]{
-        width: 10vw;
+    div[class="myBody contact"] form ul li input#consent{
         transform: scale(1.5);
+        width: 10vw;
     
     }
 
-    div[class="myBody contact"] form ul li span.agreeToReceiveEmail{
+    div[class="myBody contact"] form ul li label.agreeToReceiveEmail{
         width: 60vw;
         word-wrap: break-word; 
         /* border: 1px solid red; */
@@ -572,7 +596,7 @@ div[class="myBody contact"] p.emailLink{
         justify-content: flex-start;
     }
 
-    div[class="myBody contact"] form ul li input.email{
+    div[class="myBody contact"] form ul li input#emailText{
     
         /* width: 95vw; */
         /* position: absolute; */
@@ -580,40 +604,7 @@ div[class="myBody contact"] p.emailLink{
         width: 60vw;
        
     }
-    
-    div[class="myBody contact"] form ul li input.feedback{
-        
-        height: 6em;
-        /* border: 1px solid red; */
-        /* vertical-align:top;
-        padding-left:0;
-        padding-top:0;
-        padding-bottom:6em;
-        padding-right: auto; */
-        width: 60vw;
-        
-    }
-    
 
-    div[class="myBody contact"] form ul li input[type="submit"]{
-        width: 10em;
-        height: 3em;
-        /* margin: 3em; */
-        /* margin-left: 10em; */
-        background: #FFFFFF;
-        border: 2px solid #007EA8;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        border-radius: 4px;
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 700;
-        font-size: em;
-        line-height: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #007EA8;
-    }
 }   
 
 
@@ -623,6 +614,26 @@ div[class="myBody contact"] p.emailLink{
     border: 1px solid whitesmoke;
 
 } */
+
+div[class="myBody contact"] form ul li input[type="submit"]{
+    width: 10em;
+    height: 3em;
+    /* margin: 3em; */
+    /* margin-left: 10em; */
+    background: #FFFFFF;
+    border: 2px solid #007EA8;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: em;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #007EA8;
+}
 
 div[class="myBody contact"] form ul li input[type="file"]{
     padding-left: 1.5em;
@@ -692,12 +703,12 @@ div[class="myBody contact"] form ul li input[type="submit"]:hover{
         margin-bottom: 0.5em;
     }
 
-    div[class="myBody contact"] form ul li input.email{
+    div[class="myBody contact"] form ul li input#emailText{
         /* border: 1px solid orchid; */
         min-width: 100vw;
     }
 
-    div[class="myBody contact"] form ul li input.feedback{
+    div[class="myBody contact"] form ul li textarea[placeholder="Enter your feedback here"]{
         /* border: 1px solid orchid; */
         min-width: 100vw;
     }
@@ -710,7 +721,7 @@ div[class="myBody contact"] form ul li input[type="submit"]:hover{
         height: 6em;
     }
 
-    div[class="myBody contact"] form ul li span:not(.agreeToReceiveEmail){
+    div[class="myBody contact"] form ul li label:not(.agreeToReceiveEmail){
         /* width: 10vw; */
         word-wrap: break-word; 
         /* border: 1px solid red; */
@@ -719,7 +730,7 @@ div[class="myBody contact"] form ul li input[type="submit"]:hover{
         justify-content: flex-start;
     }
 
-    div[class="myBody contact"] form ul li input[type="checkbox"]{
+    div[class="myBody contact"] form ul li input#consent{
         /* width: 10vw; */
         transform:scale(1.5);
         display: flex;
@@ -729,7 +740,7 @@ div[class="myBody contact"] form ul li input[type="submit"]:hover{
 
     }
 
-    div[class="myBody contact"] form ul li span.agreeToReceiveEmail{
+    div[class="myBody contact"] form ul li labeln.agreeToReceiveEmail{
         /* width: 60vw; */
         word-wrap: break-word; 
         /* border: 1px solid red; */
@@ -738,10 +749,9 @@ div[class="myBody contact"] form ul li input[type="submit"]:hover{
         justify-content: flex-start;
     }
 
-    div[class="myBody contact"] form ul li input[type="submit"]{
+    /* div[class="myBody contact"] form ul li input[type="submit"]{
         width: 10em;
         height: 3em;
-        /* margin: 3em; */
         margin-left: 0px;
         background: #FFFFFF;
         border: 2px solid #007EA8;
@@ -756,7 +766,7 @@ div[class="myBody contact"] form ul li input[type="submit"]:hover{
         align-items: center;
         justify-content: center;
         color: #007EA8;
-    }
+    } */
 }
 
  
