@@ -200,15 +200,16 @@ header ul{
     bottom: 0px;
     left: 0px;
     right: 0px;
+    color: white;
     background-color: #333333;
     /* overflow-y:visible;
     overflow-x: hidden; */
     
 }
 
-footer p{
+/* footer p{
     color: white;
-}
+} */
 
 div[class="myBody index"] img.portrait{
     width: 200px;
@@ -287,27 +288,14 @@ div[class="myBody index"] p.intro{
     color: #333333;
 }
 
-/* div[class="myBody index"] a{
+div[class="myBody index"] a{
     position: absolute;
     top: calc(128px + 200px + 15px + 47px + 15px + 27px + 30px);
     bottom: auto;
     text-decoration: none;
-} */
-
-div[class="myBody index"] form{
-    position: absolute;
-    top: calc(128px + 200px + 15px + 47px + 15px + 27px + 30px);
-    bottom: auto;
 }
 
-div[class="myBody index"] form input[type="submit"]{
-   
-    /* Padding: 9px, 19px, 11px, 20px; */
-    /* position: absolute; */
-    /* top: calc(128px + 200px + 15px + 47px + 15px + 27px + 30px); */
-    /* bottom: auto;
-    left: auto;
-    right: auto; */
+div[class="myBody index"] button{
     width: 10em;
     height: 3em;
     background: #FFFFFF;
@@ -325,7 +313,32 @@ div[class="myBody index"] form input[type="submit"]{
     color: #007EA8;
 }
 
-div[class="myBody index"] form input[type="submit"]:hover{
+/* div[class="myBody index"] button{
+   
+    /* Padding: 9px, 19px, 11px, 20px; */
+    /* position: absolute; */
+    /* top: calc(128px + 200px + 15px + 47px + 15px + 27px + 30px); */
+    /* bottom: auto;
+    left: auto;
+    right: auto; */
+    /* width: 10em;
+    height: 3em;
+    background: #FFFFFF;
+    border: 2px solid #007EA8; */
+    /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #007EA8;
+} */ 
+
+div[class="myBody index"] button:hover{
     text-decoration: underline ;
 }
 
@@ -582,8 +595,10 @@ div[class="myBody contact"] p.emailLink{
     }
 
     div[class="myBody contact"] form ul li input#consent{
-        transform: scale(1.5, 1.5);
+        transform: scale(1.5);
         width: 10vw;
+        padding: 0px;
+        margin: 0px;
     
     }
 
