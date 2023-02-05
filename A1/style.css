@@ -5,3 +5,760 @@
  * Winter 2023
  *
  */
+/* body{
+    position: relative;
+} */
+html{
+    height: 100%;
+}
+
+body{
+    margin: 0px;
+    padding: 0px
+}
+
+div[class~="overall"]{
+    position: relative;
+    width: 100vw;
+    max-width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+div[class="overall index"]{
+    height: calc(65px + 128px + 200px + 15px + 47px + 15px + 27px + 30px + 15px + 3rem);
+    /* border: 1px solid red */
+    /* overflow-y: hidden; */
+}
+
+div[class="overall about"]{
+    height: calc(65px + 350px + 60vh + 3rem);
+    overflow-y: scroll;
+    /* border: 1px solid red */
+}
+
+@media screen and (min-width: 480px){
+    div[class="overall contact"]{  
+        position: relative;
+        height: calc(65px + 128px + 200px + 5em + 2em + 20em + 3em);
+        overflow-y: scroll;
+        /* border: 1px solid red */
+    }
+}
+
+@media screen and (max-width: 480px){
+    div[class="overall contact"]{  
+        position: relative;
+        height: calc(65px + 128px + 200px + 5em + 2em + 30em + 3em);
+        overflow-y: scroll;
+        /* border: 1px solid red */
+    }
+}
+
+
+
+ /* div.overall{
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: relative;
+
+ } */
+
+ div[class~="overall"] header{
+    /* display: flex; */
+    background-color:black;
+    position: absolute;
+    top: 0%;
+    /* bottom: 90%; */
+    left: 0px;
+    right: 0px;
+    height: 65px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    /* display: flex; */
+    /* align-items: flex-start; */
+    padding: 5px;
+    border: 5px
+ }
+
+header ul{
+    list-style: none;
+    /* position: absolute;
+    bottom: 0px;
+    top: 0px; */
+    /* margin-left: 1em; */
+    padding-left: 2em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* align-content: center; */
+    /* padding: 0px 0px 0px; */
+    gap: 2em;
+    isolation: isolate; 
+    /* margin: 0px;
+    padding: 0px; */
+    /* left: 10px; */
+ }
+
+ header ul li{
+    /* border-spacing: 2em; */
+    
+    /* position: absolute; */
+
+ }
+
+ header ul li a:not(.active){
+    color:#00b8d4;
+    font-size: 16px;
+    text-decoration: none;
+    /* line-height: em;
+    margin: 0px;
+    padding: 0px */
+    
+ }
+
+ header ul li a[class~="active"]{
+    color: #b2f5ea;
+    text-decoration: none;
+    font-weight: bold;
+ }
+
+ 
+
+ /* header ul li span:visited{
+    
+    align-content: center;
+    float: center
+ } */
+
+ header ul li a:hover{
+    color: white;
+ }
+
+ /* :target {
+    color:#00B8D4;
+    font-weight: 400;
+    font-size: 16px;
+ } */
+
+
+ div.overall div[class~="myBody"]{
+    /* width: 100vw;
+    height: 85%; */
+    background-color:#BBBBBB;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: stretch;
+    align-content: center;
+    position: absolute;
+    left: 0px;
+    right:0px;
+    top: 65px;
+    /* bottom: 5%;  */
+    /* height:fit-content; */
+    min-height: calc(100vh - 65px - 3rem);
+    width: 100vw;
+    overflow-y:scroll;
+    overflow-x: hidden;
+    /* padding-bottom: 2.5rem;  */
+    /* border: 1px solid blue */
+ }
+
+ div.overall div[class="myBody index"]{
+    height: calc(128px + 200px + 15px + 47px + 15px + 27px + 30px + 15px);
+ }
+
+ div.overall div[class="myBody about"]{
+    height: calc(350px + 60vh)
+ }
+
+ @media screen and (min-width: 480px){
+    div.overall div[class="myBody contact"]{
+        height: calc(128px + 200px + 5em + 2em + 20em) 
+     }
+ }
+
+ @media screen and (max-width: 480px){
+    div.overall div[class="myBody contact"]{
+        height: calc(128px + 200px + 5em + 2em + 30em) 
+     }
+ }
+ 
+
+ div.overall footer {
+    /* width: 100vw; */
+    /* height: 3em; */
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
+    height: 3rem;
+    position: absolute;
+    /* top: 95%; */
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: #333333;
+    /* overflow-y:visible;
+    overflow-x: hidden; */
+    
+}
+
+footer p{
+    color: white;
+    position: absolute;
+    margin: 0px;
+    padding: 0px;
+    line-height: 100%;
+}
+
+div[class="myBody index"] img.portrait{
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+
+    /* background-image: url(https://up.enterdesk.com/edpic/a5/7a/26/a57a2615a34218ac7ec0d3d7ceb64507.jpg);
+    background-repeat: no-repeat;
+    background-size: 200px 200px; */
+    position: absolute;
+    top: 128px;
+    bottom: auto;
+    left: auto;
+    right: auto; 
+    
+ }
+
+ /* body div.bodydiv p.hi{
+    Line-height: 56.88px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 47px;
+    color: #333333
+ }
+
+ body div.bodydiv p.intro{
+    border: 1px solid red;
+    position: absolute;
+    top: calc(50% - 27px/2 + 120px);
+ } */
+
+/* body div[class~="index"] div.describe{
+    display: flex;
+    max-width: 100%; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: calc(50%-47px/2);
+    bottom: auto;
+    left: 0px;
+    right: 0px;
+    resize:both;
+} */
+
+div[class="myBody index"] p.hi{
+    /* line-height: 3em; */
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 3em;
+    color: #333333;
+    position: absolute;
+    top: calc(128px + 200px + 15px);
+    bottom: auto;
+    left:auto;
+    right:auto;
+    margin: 0px;
+    padding: 0px
+}
+
+div[class="myBody index"] p.intro{
+    position: absolute;
+    top: calc(128px + 200px + 15px + 3em + 15px);
+    bottom: auto;
+    left: auto;
+    right: auto;
+    font-size: 1em;
+    font-weight: 400;
+    line-height: 27px;
+    /* identical to box height */
+    /* display: flex;
+    align-items: center;
+    text-align: center; */
+    color: #333333;
+}
+
+div[class="myBody index"] a{
+    position: absolute;
+    top: calc(128px + 200px + 15px + 47px + 15px + 27px + 30px);
+    bottom: auto;
+    text-decoration: none;
+}
+
+
+div[class="myBody index"] button{
+    width: 122px;
+    height: 38px;
+    /* Padding: 9px, 19px, 11px, 20px; */
+    /* position: absolute; */
+    /* top: calc(128px + 200px + 15px + 47px + 15px + 27px + 30px); */
+    /* bottom: auto;
+    left: auto;
+    right: auto; */
+    background: #FFFFFF;
+    border: 2px solid #007EA8;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #007EA8;
+}
+
+div[class="myBody index"] button:hover{
+    text-decoration: underline ;
+}
+
+
+/* div[class="myBody about"]{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 10%;
+    bottom: auto;
+    left: auto;
+    right: auto
+} */
+
+div[class="myBody about"] p.one{
+    /* display: flex; */
+    position: absolute;
+    top: 128px;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 46px;
+    line-height: 56px;
+    margin: 0px;
+    padding: 0px
+}
+
+/* div.overall div[class="myBody about"] p{
+    position: absolute;
+    top: calc(10% + 46px + 10px);
+} */
+
+/* div[class~="about"] p.two{
+    position: absolute;
+    top: calc(10% + 46px);
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+} */
+
+div[class="myBody about"] select#mycourselist{
+    position: absolute;
+    top: 190px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    outline: none;
+    border: #BBBBBB;
+    background-color: #BBBBBB;
+
+}
+
+div[class="myBody about"] p.three{
+    position: absolute;
+    top: 300px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 200;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0;
+    padding: 0.5rem
+} 
+
+div[class="myBody about"] iframe{
+    position: absolute;
+    top: 350px;
+    bottom: auto;
+    /* width: 720px; */
+    max-width:720px; 
+    height:60vh; 
+    border: 0;
+    
+}
+
+div[class="myBody contact"] img.portrait{ 
+    position: absolute;
+    top: 128px;
+    /* bottom: auto; */
+    left: auto;
+    right: auto;
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+    /* line-height: 100px; */
+    /* border: 1px, solid, red; */
+}
+
+div[class="myBody contact"] p.name{
+    position: absolute;
+    top: calc(128px + 200px + 0.3em);
+    /* bottom: auto; */
+    /* width: 720px; */
+    /* max-width:720px;  */
+    border: 0;
+    font-size: 3em;
+    /* line-height: 1em; */
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+    /* border: 1px solid red; */
+    
+}
+
+div[class="myBody contact"] p.emailLink{
+    position: absolute;
+    top: calc(128px + 200px + 0.3em + 2.7em); 
+    /* bottom: auto; */
+    /* width: 720px; */
+    /* max-width:720px;  */
+    font-family: 'Times New Roman';
+    font-size: 1.5em;
+    /* line-height: 1em; */
+    /* border: 1px solid greenyellow; */
+    display: block;
+    margin: 0px;
+    padding: 0px;
+}
+
+/* div[class="myBody contact"] a.email{
+    position: absolute;
+    top: calc(128px + 200px + 30px + 3em);
+    font-family: 'Times New Roman';
+    font-size: 3em;
+    border: 1px solid greenyellow;
+    display: inline-block;
+    
+} */
+
+
+/* @media screen and (min-width: 480px){
+    div[class="myBody contact"] form ul li{
+        display: flex;
+        flex-direction: row;
+        justify-content:space-between;
+        align-items: center;
+        margin-bottom: 0.5em;
+    }
+} */
+
+
+
+
+
+
+
+/* form ul li input{
+    width: 100%;
+    border: 1px solid red;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+} */
+
+@media screen and (min-width: 480px){
+    div[class="myBody contact"] form{
+        position: absolute;
+        top: calc(128px + 200px + 5em + 2em);
+        /* display: flex;
+        flex-direction: column;
+        justify-content: stretch; */
+        /* top: 500px; */
+        /* display: flex; */
+        /* border: 1px solid red; */
+        /* margin-left: 0.5rem;
+        margin-right: 0.5rem; */
+        /* padding: 0; */
+        height: 20em;
+        /* border:0; */
+        /* border: 1px solid plum; */
+        /* width: calc(100% - 1rem); */
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        align-content: center;
+    }
+
+    div[class="myBody contact"] form ul{
+        /* position: absolute;
+        top: calc(128px + 200px + 30px + 3em + 15px + 50px); */
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        /* justify-content: top; */
+        align-content: left;
+        align-items: left;
+        height: 20em;
+        width: 70vw;
+        /* margin-left:0px;
+        margin-right:0px; */
+    
+    }
+
+    div[class="myBody contact"] form ul li:not(.send){
+        display: flex;
+        flex-direction: row;
+        justify-content:center;
+        align-items: center;
+        margin-bottom: 0.5em;
+    }
+
+    div[class="myBody contact"] form ul li.send{
+        display: flex;
+        flex-direction: row;
+        justify-content:flex-start;
+        align-items: center;
+        margin-bottom: 0.5em;
+    }
+
+    div[class="myBody contact"] form ul li#file{
+        /* margin-top: 0.4em; */
+        /* width: 85vw; */
+        /* margin-left: 0px;
+        padding-left: 0px; */
+        height: 3em;
+    }
+
+    div[class="myBody contact"] form ul li span:not(.agreeToReceiveEmail){
+        width: 10vw;
+        word-wrap: break-word; 
+        /* border: 1px solid red; */
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    div[class="myBody contact"] form ul li input[type="checkbox"]{
+        width: 10vw;
+        transform: scale(1.5);
+    
+    }
+
+    div[class="myBody contact"] form ul li span.agreeToReceiveEmail{
+        width: 60vw;
+        word-wrap: break-word; 
+        /* border: 1px solid red; */
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+
+    div[class="myBody contact"] form ul li input.email{
+    
+        /* width: 95vw; */
+        /* position: absolute; */
+        height: 2em;
+        width: 60vw;
+       
+    }
+    
+    div[class="myBody contact"] form ul li input.feedback{
+        
+        height: 6em;
+        /* border: 1px solid red; */
+        /* vertical-align:top;
+        padding-left:0;
+        padding-top:0;
+        padding-bottom:6em;
+        padding-right: auto; */
+        width: 60vw;
+        
+    }
+    
+
+    div[class="myBody contact"] form ul li input[type="submit"]{
+        width: 10em;
+        height: 3em;
+        /* margin: 3em; */
+        /* margin-left: 10em; */
+        background: #FFFFFF;
+        border: 2px solid #007EA8;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 4px;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: em;
+        line-height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #007EA8;
+    }
+}   
+
+
+
+/* div[class="myBody contact"] form ul li.file{
+    display: flex;
+    border: 1px solid whitesmoke;
+
+} */
+
+div[class="myBody contact"] form ul li input[type="file"]{
+    padding-left: 1.5em;
+    height: 3em;
+    width: 60vw;
+    border: 1px solid white;
+    /* display: flex; */
+    line-height: 3em;
+    vertical-align: center;
+}
+
+
+
+div[class="myBody contact"] form ul li input[type="submit"]:hover{
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 480px){
+    div[class="myBody contact"] form{
+        position: absolute;
+        top: calc(128px + 200px + 5em + 2em);
+        
+        /* display: flex;
+        flex-direction: column;
+        justify-content: stretch; */
+        /* top: 500px; */
+        /* display: flex; */
+        /* border: 1px solid red; */
+        /* margin-left: 0.5rem;
+        margin-right: 0.5rem; */
+        /* padding: 0; */
+        height: 30em;
+        width: 100vw;
+        /* border:0; */
+        /* border: 1px solid plum; */
+        /* width: calc(100% - 1rem); */
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        
+    }
+
+    div[class="myBody contact"] form ul{
+        /* position: absolute;
+        top: calc(128px + 200px + 30px + 3em + 15px + 50px); */
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        /* justify-content: top; */
+        align-items: left;
+        height: 30em;
+        width: 100%;
+        /* margin-left:0px;
+        margin-right:0px; */
+        margin: 0px;
+        padding: 0px;
+        /* border: 1px solid greenyellow */
+        
+    }
+
+    div[class="myBody contact"] form ul li{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        align-content: flex-start;
+        width: 100%;
+        margin-bottom: 0.5em;
+    }
+
+    div[class="myBody contact"] form ul li input.email{
+        /* border: 1px solid orchid; */
+        min-width: 100vw;
+    }
+
+    div[class="myBody contact"] form ul li input.feedback{
+        /* border: 1px solid orchid; */
+        min-width: 100vw;
+    }
+
+    div[class="myBody contact"] form ul li#file{
+        /* margin-top: 0.4em; */
+        /* width: 85vw; */
+        /* margin-left: 0px;
+        padding-left: 0px; */
+        height: 6em;
+    }
+
+    div[class="myBody contact"] form ul li span:not(.agreeToReceiveEmail){
+        /* width: 10vw; */
+        word-wrap: break-word; 
+        /* border: 1px solid red; */
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+
+    div[class="myBody contact"] form ul li input[type="checkbox"]{
+        /* width: 10vw; */
+        transform:scale(1.5);
+        display: flex;
+        /* flex-direction: row;
+        justify-content:flex-start */
+        /* align-items: flex-start; */
+
+    }
+
+    div[class="myBody contact"] form ul li span.agreeToReceiveEmail{
+        /* width: 60vw; */
+        word-wrap: break-word; 
+        /* border: 1px solid red; */
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+
+    div[class="myBody contact"] form ul li input[type="submit"]{
+        width: 10em;
+        height: 3em;
+        /* margin: 3em; */
+        margin-left: 0px;
+        background: #FFFFFF;
+        border: 2px solid #007EA8;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 4px;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: em;
+        line-height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #007EA8;
+    }
+}
+
+ 
+
+
