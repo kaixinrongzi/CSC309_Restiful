@@ -81,6 +81,7 @@ class UserProfileView(FormView):
     form_class = ProfileForm
     template_name = "profile.html"
     success_url = reverse_lazy("accounts:viewprofile")
+    # login_url = reverse_lazy("accounts:login")
 
     def get_queryset(self):
         return User.objects.filter(pk=self.request.user.pk)
@@ -102,16 +103,22 @@ class UserProfileView(FormView):
         print("view")
         return context
 
-    # def get(self, request, *args, **kwargs):
-    #     user = request.user
-    #     if not user.is_authenticated:
-    #         return HttpResponse("Unauthorized", 401)
-    #     else:
-    #         return JsonResponse({'id': user.id,
-    #                              "username": user.username,
-    #                              "email": user.email,
-    #                              "first_name": user.first_name,
-    #                              "last_name": user.last_name})
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated:
+            return HttpResponse("Unauthorized", status=401)
+        else:
+            context = {}
+            json_response = {'id': user.id,
+                             "username": user.username,
+                             "email": user.email,
+                             "first_name": user.first_name,
+                             "last_name": user.last_name}
+            context['user_json'] = json_response
+            context['link'] = 'view'
+            context['user'] = user
+            print("view")
+            return render(request, self.template_name, context)
 
 
 class UserProfileEdit2(UserProfileView, UpdateView):
@@ -132,7 +139,6 @@ class UserProfileEdit2(UserProfileView, UpdateView):
         return context
 
     def form_valid(self, form):
-        print("111")
         user = form.save()
         new_password = form.cleaned_data["password1"]
         if new_password != "":
@@ -144,11 +150,11 @@ class UserProfileEdit2(UserProfileView, UpdateView):
         return redirect(self.success_url)
 
 
-class UserProfileEdit(LoginRequiredMixin, FormView):
+class UserProfileEdit(FormView):
     form_class = ProfileForm
     template_name = "profile.html"
     success_url = reverse_lazy("accounts:viewprofile")
-    login_url = reverse_lazy("accounts:login")
+    # login_url = reverse_lazy("accounts:login")
 
     def get_queryset(self):
         print("123")
@@ -188,6 +194,8 @@ class UserProfileEdit(LoginRequiredMixin, FormView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        if not user.is_authenticated:
+            return HttpResponse("Unauthorized", status=401)
         print(user)
         form = self.form_class({"first_name": user.first_name,
                                 "last_name": user.last_name,
