@@ -1,7 +1,7 @@
 from django.views.generic import CreateView, FormView, DeleteView, UpdateView, DetailView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
-from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
 from .forms.BankAddForm import BankAddForm, BankViewForm, BankViewAllForm
@@ -13,6 +13,7 @@ class BankAddView(FormView):
     form_class = BankAddForm
     template_name = "create.html"
     success_url = reverse_lazy("banks:bankview")
+    # login_url = reverse_lazy("accounts:login")
 
     def get_context_data(self, **kwargs):  # called by both get & post method
         context = super().get_context_data(**kwargs)
@@ -22,6 +23,9 @@ class BankAddView(FormView):
 
     # called by post method: form_valid(self, form)
     def form_valid(self, form):
+        user = self.request.user
+        if not user.is_authenticated:
+            return HttpResponse('401 Unauthorized', status=401)
         bank = form.save()
         bank.owner = self.request.user
         bank.save()
@@ -34,11 +38,6 @@ class BankAddView(FormView):
             return HttpResponse('401 Unauthorized', status=401)
         return super().get(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        user = request.user
-        if not user.is_authenticated:
-            return HttpResponse('401 Unauthorized', status=401)
-        return super().post(request, *args, **kwargs)
 
 
 class BankView(DetailView):
@@ -51,17 +50,20 @@ class BankView(DetailView):
         bank_id = full_path_lst[-3]
         bank = Bank.objects.filter(pk=bank_id).first()
         if bank is None:
-            return HttpResponse('NOT FOUND', status=404)
+            return HttpResponse('404 NOT FOUND', status=404)
         response = "<h1>{0}</h1><p>Swift Code: {1}</p><p>Institution Number: {2}</p><p>Bank Description: {3}</p>".format(
             bank.name, bank.swift_code, bank.inst_num, bank.description)
         return HttpResponse(response)
 
     # def get_queryset(self):
+    #     print("get_query")
     #     full_path = self.request.get_full_path()
     #     full_path_lst = full_path.split("/")
     #     bank_id = full_path_lst[-3]
     #     # bank = Bank.objects.get(pk=bank_id)
     #     return Bank.objects.filter(pk=bank_id)
+
+
 
 
 class BankViewAll(ListView):
@@ -118,7 +120,7 @@ class BranchAddView(FormView):
         branch = form.save()
         branch.bank = bank
         branch.save()
-        return redirect(reverse("banks:branchview", kwargs={"branch_id": branch.pk}))
+        return HttpResponseRedirect(reverse("banks:branchview", kwargs={"branch_id": branch.pk}))
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -138,11 +140,11 @@ class BranchAddView(FormView):
         context = {"user": user, "link": "create", 'form': form}
         return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
-        user = request.user
-        if not user.is_authenticated:
-            return HttpResponse('401 Unauthorized', status=401)
-        return super().post(request, *args, **kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     user = request.user
+    #     if not user.is_authenticated:
+    #         return HttpResponse('401 Unauthorized', status=401)
+    #     return super().post(request, *args, **kwargs)
 
 
 class BranchView(DetailView):
@@ -232,7 +234,8 @@ class BranchEdit(UpdateView):
         branch = form.save()
         branch.last_modified = form.cleaned_data["last_modified"]
         branch.save()
-        return redirect(reverse("banks:branchview", kwargs={"branch_id": branch.id}))
+        return HttpResponseRedirect(reverse("banks:branchview", kwargs={"branch_id": branch.id}),status=302)
+        # return HttpResponse(status=302, content=reverse("banks:branchview", kwargs={"branch_id": branch.id}))
 
     def get(self, request, *args, **kwargs):
         print("get")
@@ -248,6 +251,7 @@ class BranchEdit(UpdateView):
         user = request.user
         if branch.bank.owner.pk != user.pk:
             return HttpResponse('403 FORBIDDEN', status=403)
+        return super().get(request, *args, **kwargs)
 
         # context = {}
         # form = self.form_class({"name": branch.name,
@@ -258,24 +262,24 @@ class BranchEdit(UpdateView):
         # context["form"] = form
         # context["user"] = user
         # context['link'] = "edit"
-        return super().get(request, *args, **kwargs)
         # return render(request, self.template_name, context)
 
-    def post(self, request, *args, **kwargs):
-        print("post")
-        user = self.request.user
-        if not user.is_authenticated:
-            return HttpResponse('401 Unauthorized', status=401)
-        full_path = request.get_full_path()
-        full_path_lst = full_path.split("/")
-        branch_id = full_path_lst[-3]
-        branch = Branch.objects.filter(pk=branch_id).first()
-        if branch is None:
-            return HttpResponse('NOT FOUND', status=404)
-        user = request.user
-        if branch.bank.owner.pk != user.pk:
-            return HttpResponse('403 FORBIDDEN', status=403)
-        return super().post(request, *args, **kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     print("post")
+    #     user = self.request.user
+    #     if not user.is_authenticated:
+    #         return HttpResponse('401 Unauthorized', status=401)
+    #     full_path = request.get_full_path()
+    #     full_path_lst = full_path.split("/")
+    #     branch_id = full_path_lst[-3]
+    #     branch = Branch.objects.filter(pk=branch_id).first()
+    #     if branch is None:
+    #         return HttpResponse('NOT FOUND', status=404)
+    #     user = request.user
+    #     if branch.bank.owner.pk != user.pk:
+    #         return HttpResponse('403 FORBIDDEN', status=403)
+    #     # return super().post(request, *args, **kwargs)
+    #     return HttpResponse(status=302)
 
 
 
