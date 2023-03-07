@@ -31,13 +31,13 @@ class BankAddView(FormView):
     def get(self, request, *args, **kwargs):
         user = request.user
         if not user.is_authenticated:
-            return HttpResponse(status=401)
+            return HttpResponse('401 Unauthorized', status=401)
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         user = request.user
         if not user.is_authenticated:
-            return HttpResponse(status=401)
+            return HttpResponse('401 Unauthorized', status=401)
         return super().post(request, *args, **kwargs)
 
 
@@ -51,7 +51,7 @@ class BankView(DetailView):
         bank_id = full_path_lst[-3]
         bank = Bank.objects.filter(pk=bank_id).first()
         if bank is None:
-            return HttpResponse(status=404)
+            return HttpResponse('NOT FOUND', status=404)
         response = "<h1>{0}</h1><p>Swift Code: {1}</p><p>Institution Number: {2}</p><p>Bank Description: {3}</p>".format(
             bank.name, bank.swift_code, bank.inst_num, bank.description)
         return HttpResponse(response)
@@ -123,17 +123,17 @@ class BranchAddView(FormView):
     def get(self, request, *args, **kwargs):
         user = request.user
         if not user.is_authenticated:
-            return HttpResponse(status=401)
+            return HttpResponse('401 Unauthorized', status=401)
         full_path = request.get_full_path()
         full_path_lst = full_path.split("/")
         bank_id = full_path_lst[-4]
         bank = Bank.objects.filter(pk=bank_id).first()
         # if the bank DNE
         if bank is None:
-            return HttpResponse(status=404)
+            return HttpResponse('NOT FOUND', status=404)
         user = request.user
         if bank.owner.pk != user.pk:
-            return HttpResponse(status=403)
+            return HttpResponse('403 FORBIDDEN', status=403)
         form = self.form_class()
         context = {"user": user, "link": "create", 'form': form}
         return render(request, self.template_name, context)
@@ -141,7 +141,7 @@ class BranchAddView(FormView):
     def post(self, request, *args, **kwargs):
         user = request.user
         if not user.is_authenticated:
-            return HttpResponse(status=401)
+            return HttpResponse('401 Unauthorized', status=401)
         return super().post(request, *args, **kwargs)
 
 
@@ -155,7 +155,7 @@ class BranchView(DetailView):
         branch_id = full_path_lst[-3]
         branch = Branch.objects.filter(pk=branch_id).first()
         if branch is None:
-            return HttpResponse(status=404)
+            return HttpResponse('NOT FOUND', status=404)
         jsresponse = {"id": branch.id,
                       "name": branch.name,
                       "transit_num": branch.transit_num,
@@ -175,7 +175,7 @@ class BranchViewAll(DetailView):
         bank_id = full_path_lst[-4]
         my_bank = Bank.objects.filter(pk=bank_id).first()
         if my_bank is None:
-            return HttpResponse(status=404)
+            return HttpResponse('NOT FOUND', status=404)
         branches = Branch.objects.filter(bank=my_bank)
 
         jsresponse = []
@@ -228,6 +228,7 @@ class BranchEdit(UpdateView):
     #     return context
 
     def form_valid(self, form):
+        print("form_valid")
         branch = form.save()
         branch.last_modified = form.cleaned_data["last_modified"]
         branch.save()
@@ -237,16 +238,16 @@ class BranchEdit(UpdateView):
         print("get")
         user = self.request.user
         if not user.is_authenticated:
-            return HttpResponse(status=401)
+            return HttpResponse('401 Unauthorized', status=401)
         full_path = request.get_full_path()
         full_path_lst = full_path.split("/")
         branch_id = full_path_lst[-3]
         branch = Branch.objects.filter(pk=branch_id).first()
         if branch is None:
-            return HttpResponse(status=404)
+            return HttpResponse('NOT FOUND', status=404)
         user = request.user
         if branch.bank.owner.pk != user.pk:
-            return HttpResponse(status=403)
+            return HttpResponse('403 FORBIDDEN', status=403)
 
         # context = {}
         # form = self.form_class({"name": branch.name,
@@ -264,16 +265,16 @@ class BranchEdit(UpdateView):
         print("post")
         user = self.request.user
         if not user.is_authenticated:
-            return HttpResponse(status=401)
+            return HttpResponse('401 Unauthorized', status=401)
         full_path = request.get_full_path()
         full_path_lst = full_path.split("/")
         branch_id = full_path_lst[-3]
         branch = Branch.objects.filter(pk=branch_id).first()
         if branch is None:
-            return HttpResponse(status=404)
+            return HttpResponse('NOT FOUND', status=404)
         user = request.user
         if branch.bank.owner.pk != user.pk:
-            return HttpResponse(status=403)
+            return HttpResponse('403 FORBIDDEN', status=403)
         return super().post(request, *args, **kwargs)
 
 
