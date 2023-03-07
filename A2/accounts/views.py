@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, FormView, DeleteView, UpdateView, DetailView
 from .forms import LoginForm, RegisterForm, ProfileForm
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -55,7 +55,8 @@ class UserLogout(View):
 
     def get(self, request):
         logout(request)
-        return redirect(self.success_url)
+        # return redirect(self.success_url)
+        return HttpResponseRedirect(self.success_url, status=302)
 
 
 # def UserProfile(request):

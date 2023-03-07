@@ -279,22 +279,22 @@ class BranchEdit(UpdateView):
         # context['link'] = "edit"
         # return render(request, self.template_name, context)
 
-    # def post(self, request, *args, **kwargs):
-    #     print("post")
-    #     user = self.request.user
-    #     if not user.is_authenticated:
-    #         return HttpResponse('401 Unauthorized', status=401)
-    #     full_path = request.get_full_path()
-    #     full_path_lst = full_path.split("/")
-    #     branch_id = full_path_lst[-3]
-    #     branch = Branch.objects.filter(pk=branch_id).first()
-    #     if branch is None:
-    #         return HttpResponse('NOT FOUND', status=404)
-    #     user = request.user
-    #     if branch.bank.owner.pk != user.pk:
-    #         return HttpResponse('403 FORBIDDEN', status=403)
-    #     # return super().post(request, *args, **kwargs)
-    #     return HttpResponse(status=302)
+    def post(self, request, *args, **kwargs):
+        print("post")
+        user = self.request.user
+        if not user.is_authenticated:
+            return HttpResponse('401 Unauthorized', status=401)
+        full_path = request.get_full_path()
+        full_path_lst = full_path.split("/")
+        branch_id = full_path_lst[-3]
+        branch = Branch.objects.filter(pk=branch_id).first()
+        if branch is None:
+            return HttpResponse('NOT FOUND', status=404)
+        user = request.user
+        if branch.bank.owner.pk != user.pk:
+            return HttpResponse('403 FORBIDDEN', status=403)
+        # return super().post(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
 
 
