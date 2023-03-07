@@ -1,5 +1,5 @@
 from django.forms import ModelForm, Form
-from banks.models import Branch
+from ..models import Branch
 from django.utils import timezone
 
 
@@ -30,6 +30,19 @@ class BranchEditForm(ModelForm):
         cleaned["last_modified"] = timezone.now()
         cleaned["branch"] = cleaned
         return cleaned
+
+
+class BranchViewForm(ModelForm):
+    class Meta:
+        model = Branch
+        fields = ["name", "transit_num", "address", "email", "capacity"]
+
+
+class BranchViewAllForm(ModelForm):
+    class Meta:
+        model = Branch
+        fields = ["name", "transit_num", "address", "email", "capacity"]
+
 
 
 

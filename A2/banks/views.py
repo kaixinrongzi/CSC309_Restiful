@@ -4,8 +4,8 @@ from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
-from banks.forms.BankAddForm import BankAddForm
-from banks.forms.BranchAddForm import BranchAddForm, BranchEditForm
+from .forms.BankAddForm import BankAddForm, BankViewForm, BankViewAllForm
+from .forms.BranchAddForm import BranchAddForm, BranchEditForm, BranchViewForm, BranchViewAllForm
 from .models import Bank, Branch
 
 
@@ -31,6 +31,8 @@ class BankAddView(LoginRequiredMixin, FormView):
 
 
 class BankView(DetailView):
+    form_class = BankViewForm
+    template_name = "create.html"
 
     def get(self, request, *args, **kwargs):
         full_path = request.get_full_path()
@@ -52,8 +54,14 @@ class BankView(DetailView):
 
 
 class BankViewAll(ListView):
-    model = Bank
+    # model = Bank
     template_name = "list.html"
+    form_class = BankViewAllForm
+
+    def get_queryset(self):
+        user = self.request.user
+        banks = Bank.objects.filter(owner=user)
+        return banks
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -118,6 +126,8 @@ class BranchAddView(LoginRequiredMixin, FormView):
 
 
 class BranchView(DetailView):
+    form_class = BranchViewForm
+    template_name = "branch.html"
 
     def get(self, request, *args, **kwargs):
         full_path = request.get_full_path()
@@ -137,12 +147,15 @@ class BranchView(DetailView):
 
 
 class BranchViewAll(DetailView):
+    form_class = BranchViewAllForm
 
     def get(self, request, *args, **kwargs):
         full_path = request.get_full_path()
         full_path_lst = full_path.split("/")
         bank_id = full_path_lst[-4]
-        my_bank = Bank.objects.get(pk=bank_id)
+        my_bank = Bank.objects.filter(pk=bank_id).first()
+        if my_bank is None:
+            return HttpResponse("NOT FOUND", status=404)
         branches = Branch.objects.filter(bank=my_bank)
 
         jsresponse = []
