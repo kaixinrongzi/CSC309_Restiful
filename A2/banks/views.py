@@ -150,6 +150,15 @@ class BranchAddView(FormView):
         user = request.user
         if not user.is_authenticated:
             return HttpResponse('401 Unauthorized', status=401)
+        full_path = request.get_full_path()
+        full_path_lst = full_path.split("/")
+        bank_id = full_path_lst[-4]
+        bank = Bank.objects.filter(pk=bank_id).first()
+        # if the bank DNE
+        if bank is None:
+            return HttpResponse('404 NOT FOUND', status=404)
+        if bank.owner.pk != user.pk:
+            return HttpResponse('403 FORBIDDEN', status=403)
         return super().post(request, *args, **kwargs)
 
 
