@@ -210,29 +210,12 @@ class UserProfileEdit(FormView):
                    'link': 'edit'}
         return render(request, self.template_name, context)
 
-    # def post(self, request):
-    #     print("post")
-    #     form = ProfileForm(request.POST)
-    #     print(form.is_valid())
-    #     user_id = self.request.session['user']
-    #     user = User.objects.get(id=user_id)
-    #     if form.is_valid():    #form.is_valid() calls form.clean()
-    #         print("valid")
-    #         user.first_name = form.cleaned_data["first_name"]
-    #         user.last_name = form.cleaned_data["last_name"]
-    #         print("old pwd:", user.password)
-    #         user.email = form.cleaned_data["email"]
-    #         user.save()
-    #         if form.cleaned_data["password1"] == "":
-    #             return redirect(reverse_lazy("viewprofile"))
-    #         else:
-    #             print("reset pwd")
-    #             # context = {"user": user, "link": "edit", "form": form}
-    #             return redirect(reverse_lazy("resetpwd"))
-    #     else:
-    #         print(form.errors)
-    #         context = {"user": user, "link": "edit", "form": form}
-    #         return render(request, self.template_name, context)
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated:
+            return HttpResponse("Unauthorized", status=401)
+        return super().post(request, *args, **kwargs)
+
 
     # def get_queryset(self):
     #     # user_id = self.request.session['user']
