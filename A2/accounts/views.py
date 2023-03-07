@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -38,10 +40,6 @@ class UserLogin(FormView):
         self.request.session['user'] = user.pk
         login(self.request, user)
         return super().form_valid(form)
-
-
-
-
 
 
 # def UserLogout(request):
@@ -86,6 +84,7 @@ class UserProfileView(FormView):
     form_class = ProfileForm
     template_name = "profile.html"
     success_url = reverse_lazy("accounts:viewprofile")
+
     # login_url = reverse_lazy("accounts:login")
 
     def get_queryset(self):
@@ -93,15 +92,13 @@ class UserProfileView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print("64")
-        print("66")
         user = self.request.user
         print("user logined: ", self.request.user.is_authenticated)
-        json_response = {'id': user.id,
-                         "username": user.username,
-                         "email": user.email,
-                         "first_name": user.first_name,
-                         "last_name": user.last_name}
+        json_response = [{'id': user.id,
+                          "username": user.username,
+                          "email": user.email,
+                          "first_name": user.first_name,
+                          "last_name": user.last_name}]
         context['user_json'] = json_response
         context['link'] = 'view'
         context['user'] = user
@@ -159,6 +156,7 @@ class UserProfileEdit(FormView):
     form_class = ProfileForm
     template_name = "profile.html"
     success_url = reverse_lazy("accounts:viewprofile")
+
     # login_url = reverse_lazy("accounts:login")
 
     def get_queryset(self):
@@ -215,7 +213,6 @@ class UserProfileEdit(FormView):
         if not user.is_authenticated:
             return HttpResponse("Unauthorized", status=401)
         return super().post(request, *args, **kwargs)
-
 
     # def get_queryset(self):
     #     # user_id = self.request.session['user']

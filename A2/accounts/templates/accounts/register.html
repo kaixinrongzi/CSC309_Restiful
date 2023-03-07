@@ -19,34 +19,32 @@
 <!--      {{ form.as_p }}-->
     <p>
         <label>
-            Username: {{ form.username }}  {{ form.errors.username }}
+            {{ form.errors.username }} Username: {{ form.username }}
         </label>
     </p>
     <p>
         <label>
-            {{ username_err }}
-            Password: {{ form.password1}}  {{ form.errors.password1 }}
+            {{ form.errors.password1 }} Password: {{ form.password1}}
         </label>
     </p>
     <p>
         <label>
-            {{ username_err }}
-            Repeat Password: {{ form.password2}}  {{ form.errors.password2 }}
+            {{ form.errors.password2 }} Repeat Password: {{ form.password2}}
         </label>
     </p>
     <p>
         <label>
-            Email: {{ form.email}}  {{ form.errors.email }}
+            {{ form.errors.email }} Email: {{ form.email}}
         </label>
     </p>
     <p>
         <label>
-            First Name: {{ form.first_name}}   {{ form.errors.first_name }}
+            {{ form.errors.first_name }} First Name: {{ form.first_name}}
         </label>
     </p>
     <p>
         <label>
-            Last Name: {{ form.last_name}}   {{ form.errors.last_name }}
+            {{ form.errors.last_name }} Last Name: {{ form.last_name}}
         </label>
     </p>
     <p>
