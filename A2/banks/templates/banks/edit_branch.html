@@ -8,6 +8,7 @@
     <title>Edit Branch</title>
 </head>
 <body>
+    <p>{{ user }} is {{ user_login }} </p>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}

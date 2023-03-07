@@ -40,7 +40,7 @@ class BankView(DetailView):
         bank_id = full_path_lst[-3]
         bank = Bank.objects.filter(pk=bank_id).first()
         if bank is None:
-            return HttpResponse("NOT FOUND", status=404)
+            return HttpResponse(status=404)
         response = "<h1>{0}</h1><p>Swift Code: {1}</p><p>Institution Number: {2}</p><p>Bank Description: {3}</p>".format(
             bank.name, bank.swift_code, bank.inst_num, bank.description)
         return HttpResponse(response)
@@ -116,10 +116,10 @@ class BranchAddView(LoginRequiredMixin, FormView):
         bank = Bank.objects.filter(pk=bank_id).first()
         # if the bank DNE
         if bank is None:
-            return HttpResponse('NOT FOUND', status=404)
+            return HttpResponse(status=404)
         user = request.user
         if bank.owner.pk != user.pk:
-            return HttpResponse('Forbidden', status=403)
+            return HttpResponse(status=403)
         form = self.form_class()
         context = {"user": user, "link": "create", 'form': form}
         return render(request, self.template_name, context)
@@ -135,7 +135,7 @@ class BranchView(DetailView):
         branch_id = full_path_lst[-3]
         branch = Branch.objects.filter(pk=branch_id).first()
         if branch is None:
-            return HttpResponse("NOT FOUND", status=404)
+            return HttpResponse(status=404)
         jsresponse = {"id": branch.id,
                       "name": branch.name,
                       "transit_num": branch.transit_num,
@@ -155,7 +155,7 @@ class BranchViewAll(DetailView):
         bank_id = full_path_lst[-4]
         my_bank = Bank.objects.filter(pk=bank_id).first()
         if my_bank is None:
-            return HttpResponse("NOT FOUND", status=404)
+            return HttpResponse(status=404)
         branches = Branch.objects.filter(bank=my_bank)
 
         jsresponse = []
@@ -171,13 +171,16 @@ class BranchViewAll(DetailView):
         return JsonResponse(jsresponse, safe=False)
 
 
-class BranchEdit(LoginRequiredMixin, UpdateView):
+class BranchEdit(UpdateView):
     form_class = BranchEditForm
     template_name = "edit_branch.html"
-    login_url = reverse_lazy('accounts:login')
     success_url = reverse_lazy("banks:branchview")
 
-    def get_queryset(self):
+    def get_queryset(self):     # called whenever get or post, but called after get
+        print("get_queryset")
+        user = self.request.user
+        if not user.is_authenticated:
+            return HttpResponse(status=401)
         full_path = self.request.get_full_path()
         full_path_lst = full_path.split("/")
         branch_id = full_path_lst[-3]
@@ -200,26 +203,25 @@ class BranchEdit(LoginRequiredMixin, UpdateView):
     #     return context
 
     def form_valid(self, form):
-        print("form is valid")
         branch = form.save()
         branch.last_modified = form.cleaned_data["last_modified"]
         branch.save()
         return redirect(reverse("banks:branchview", kwargs={"branch_id": branch.id}))
 
-    def form_invalid(self, form):
-        print("form is invalid")
-        return super().form_valid(form)
-
     def get(self, request, *args, **kwargs):
+        print("get")
+        user = self.request.user
+        if not user.is_authenticated:
+            return HttpResponse(status=401)
         full_path = request.get_full_path()
         full_path_lst = full_path.split("/")
         branch_id = full_path_lst[-3]
         branch = Branch.objects.filter(pk=branch_id).first()
         if branch is None:
-            return HttpResponse("NOT FOUND", status=404)
+            return HttpResponse(status=404)
         user = request.user
         if branch.bank.owner.pk != user.pk:
-            return HttpResponse("FORBIDDEN", status=403)
+            return HttpResponse(status=403)
 
         # context = {}
         # form = self.form_class({"name": branch.name,
