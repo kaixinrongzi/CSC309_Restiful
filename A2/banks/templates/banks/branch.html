@@ -1,7 +1,7 @@
 
 <form method="POST" action="">
       {% csrf_token %}
-      {% if link == "create" %}
+
           {{ user }}
           {{ form.as_p }}
           {{ error_msg }}
@@ -9,13 +9,5 @@
             <label></label>
             <input class="btn" type="submit" value="Create">
           </p>
-     {% endif %}
-     {% if link == "edit" %}
-        {{ form.as_p }}
-        {{ error_msg }}
-        <p>
-            <label></label>
-            <input class="btn" type="submit" value="Edit">
-          </p>
-     {% endif %}
+
 </form>

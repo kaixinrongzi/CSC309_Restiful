@@ -173,9 +173,9 @@ class BranchViewAll(DetailView):
 
 class BranchEdit(LoginRequiredMixin, UpdateView):
     form_class = BranchEditForm
-    template_name = "branch.html"
+    template_name = "edit_branch.html"
     login_url = reverse_lazy('accounts:login')
-    # success_url = reverse_lazy("branchview")
+    success_url = reverse_lazy("banks:branchview")
 
     def get_queryset(self):
         full_path = self.request.get_full_path()
@@ -184,26 +184,31 @@ class BranchEdit(LoginRequiredMixin, UpdateView):
         print("branch_id:", branch_id)
         return Branch.objects.filter(pk=branch_id)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)  # context contains form
-        user = self.request.user
-        branch = self.get_queryset().first()
-        print("163")
-        form = self.form_class({"name": branch.name,
-                                "transit_num": branch.transit_num,
-                                "address": branch.address,
-                                "email": branch.email,
-                                "capacity": branch.capacity})
-        context["form"] = form
-        context["user"] = user
-        context['link'] = "edit"
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)  # context contains form
+    #     user = self.request.user
+    #     branch = self.get_queryset().first()
+    #     print("163")
+    #     form = self.form_class({"name": branch.name,
+    #                             "transit_num": branch.transit_num,
+    #                             "address": branch.address,
+    #                             "email": branch.email,
+    #                             "capacity": branch.capacity})
+    #     context["form"] = form
+    #     context["user"] = user
+    #     context['link'] = "edit"
+    #     return context
 
     def form_valid(self, form):
+        print("form is valid")
         branch = form.save()
         branch.last_modified = form.cleaned_data["last_modified"]
         branch.save()
         return redirect(reverse("banks:branchview", kwargs={"branch_id": branch.id}))
+
+    def form_invalid(self, form):
+        print("form is invalid")
+        return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
         full_path = request.get_full_path()
