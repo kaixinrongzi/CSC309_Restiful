@@ -9,11 +9,10 @@ from .forms.BranchAddForm import BranchAddForm, BranchEditForm, BranchViewForm, 
 from .models import Bank, Branch
 
 
-class BankAddView(LoginRequiredMixin, FormView):
+class BankAddView(FormView):
     form_class = BankAddForm
     template_name = "create.html"
     success_url = reverse_lazy("banks:bankview")
-    login_url = reverse_lazy('accounts:login')
 
     def get_context_data(self, **kwargs):  # called by both get & post method
         context = super().get_context_data(**kwargs)
@@ -28,6 +27,18 @@ class BankAddView(LoginRequiredMixin, FormView):
         bank.save()
         bank_id = bank.id
         return redirect(reverse(viewname="banks:bankview", kwargs={"bank_id": bank_id}))
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated:
+            return HttpResponse(status=401)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated:
+            return HttpResponse(status=401)
+        return super().post(request, *args, **kwargs)
 
 
 class BankView(DetailView):
@@ -86,10 +97,10 @@ class BankViewAll(ListView):
         # return HttpResponse(response)
 
 
-class BranchAddView(LoginRequiredMixin, FormView):
+class BranchAddView(FormView):
     form_class = BranchAddForm
     template_name = "branch.html"
-    login_url = reverse_lazy('accounts:login')
+    # login_url = reverse_lazy('accounts:login')
     success_url = reverse_lazy("banks:branchview")
 
     def get_context_data(self, **kwargs):
@@ -110,6 +121,9 @@ class BranchAddView(LoginRequiredMixin, FormView):
         return redirect(reverse("banks:branchview", kwargs={"branch_id": branch.pk}))
 
     def get(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated:
+            return HttpResponse(status=401)
         full_path = request.get_full_path()
         full_path_lst = full_path.split("/")
         bank_id = full_path_lst[-4]
@@ -123,6 +137,12 @@ class BranchAddView(LoginRequiredMixin, FormView):
         form = self.form_class()
         context = {"user": user, "link": "create", 'form': form}
         return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated:
+            return HttpResponse(status=401)
+        return super().post(request, *args, **kwargs)
 
 
 class BranchView(DetailView):
@@ -178,12 +198,17 @@ class BranchEdit(UpdateView):
 
     def get_queryset(self):     # called whenever get or post, but called after get
         print("get_queryset")
-        user = self.request.user
-        if not user.is_authenticated:
-            return HttpResponse(status=401)
+        # user = self.request.user
+        # if not user.is_authenticated:
+        #     return HttpResponse(status=401)
         full_path = self.request.get_full_path()
         full_path_lst = full_path.split("/")
         branch_id = full_path_lst[-3]
+        # branch = Branch.objects.filter(pk=branch_id).first()
+        # if branch is None:
+        #     return HttpResponse(status=404)
+        # if branch.bank.owner.pk != user.pk:
+        #     return HttpResponse(status=403)
         print("branch_id:", branch_id)
         return Branch.objects.filter(pk=branch_id)
 
@@ -234,6 +259,22 @@ class BranchEdit(UpdateView):
         # context['link'] = "edit"
         return super().get(request, *args, **kwargs)
         # return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        print("post")
+        user = self.request.user
+        if not user.is_authenticated:
+            return HttpResponse(status=401)
+        full_path = request.get_full_path()
+        full_path_lst = full_path.split("/")
+        branch_id = full_path_lst[-3]
+        branch = Branch.objects.filter(pk=branch_id).first()
+        if branch is None:
+            return HttpResponse(status=404)
+        user = request.user
+        if branch.bank.owner.pk != user.pk:
+            return HttpResponse(status=403)
+        return super().post(request, *args, **kwargs)
 
 
 

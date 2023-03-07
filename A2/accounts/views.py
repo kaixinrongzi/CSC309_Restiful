@@ -86,9 +86,6 @@ class UserProfileView(FormView):
         return User.objects.filter(pk=self.request.user.pk)
 
     def get_context_data(self, **kwargs):
-        user = self.request.user
-        if not user.is_authenticated:
-            return HttpResponse("Unauthorized", status=401)
         context = super().get_context_data(**kwargs)
         print("64")
         print("66")
