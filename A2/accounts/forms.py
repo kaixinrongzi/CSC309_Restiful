@@ -68,13 +68,19 @@ class LoginForm(forms.Form):
 
     def clean(self):
         data = super().clean()
-        user = authenticate(username=data['username'], password=data['password'])
-        if not user:
-            raise ValidationError({
-                "username": 'Username or password is invalid'}
-            )
-        data['user'] = user
-        return data
+        errors = {}
+        if 'username' not in data or 'password' not in data:
+            raise ValidationError({})
+        username = data['username']
+        password = data['password']
+        if username is not None and password is not None:
+            user = authenticate(username=username, password=password)
+            if not user:
+                raise ValidationError({
+                    "username": 'Username or password is invalid'}
+                )
+            data['user'] = user
+            return data
 
 
 class ProfileForm(ModelForm):    #对应{{ form }}

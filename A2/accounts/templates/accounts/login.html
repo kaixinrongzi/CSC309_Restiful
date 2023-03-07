@@ -8,10 +8,11 @@
 {{message}}
 <form method="POST" class="post-form" enctype="multipart/form-data">
         {% csrf_token %}
-    <p> <label>Username: {{ form.username }}</label> </p>
-    <p> <label>Password: {{ form.password }}</label> </p>
+    <p> <label>Username: {{ form.username }} {{ form.errors.username }}</label> </p>
+    <p> <label>Password: {{ form.password }} {{ form.errors.password }}</label> </p>
     <button type="submit" class="save btn btn-default">LogIn</button>
 </form>
-{{ form.errors.username }}
+
+
 </body>
 </html>

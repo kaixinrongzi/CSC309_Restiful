@@ -40,6 +40,10 @@ class UserLogin(FormView):
         return super().form_valid(form)
 
 
+
+
+
+
 # def UserLogout(request):
 #     # request.session['from'] = form.cleaned_data['user']
 #     logout(request)

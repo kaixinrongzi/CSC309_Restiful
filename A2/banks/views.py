@@ -38,6 +38,12 @@ class BankAddView(FormView):
             return HttpResponse('401 Unauthorized', status=401)
         return super().get(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated:
+            return HttpResponse('401 Unauthorized', status=401)
+        return super().post(request, *args, **kwargs)
+
 
 
 class BankView(DetailView):
@@ -140,11 +146,11 @@ class BranchAddView(FormView):
         context = {"user": user, "link": "create", 'form': form}
         return render(request, self.template_name, context)
 
-    # def post(self, request, *args, **kwargs):
-    #     user = request.user
-    #     if not user.is_authenticated:
-    #         return HttpResponse('401 Unauthorized', status=401)
-    #     return super().post(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated:
+            return HttpResponse('401 Unauthorized', status=401)
+        return super().post(request, *args, **kwargs)
 
 
 class BranchView(DetailView):
