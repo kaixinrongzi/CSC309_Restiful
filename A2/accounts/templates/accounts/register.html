@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register</title>
+    <style>
+        form {
+            align: center
+        }
+
+    </style>
+</head>
+<body>
+    <form method="POST">
+      {% csrf_token %}
+<!--      {{ form.as_p }}-->
+    <p>
+        <label>
+            Username: {{ form.username }}  {{ form.errors.username }}
+        </label>
+    </p>
+    <p>
+        <label>
+            {{ username_err }}
+            Password: {{ form.password1}}  {{ form.errors.password1 }}
+        </label>
+    </p>
+    <p>
+        <label>
+            {{ username_err }}
+            Repeat Password: {{ form.password2}}  {{ form.errors.password2 }}
+        </label>
+    </p>
+    <p>
+        <label>
+            Email: {{ form.email}}  {{ form.errors.email }}
+        </label>
+    </p>
+    <p>
+        <label>
+            First Name: {{ form.first_name}}   {{ form.errors.first_name }}
+        </label>
+    </p>
+    <p>
+        <label>
+            Last Name: {{ form.last_name}}   {{ form.errors.last_name }}
+        </label>
+    </p>
+    <p>
+        <label></label>
+        <input class="btn" type="submit" value="Register">
+    </p>
+<!--        {% for field in form %}-->
+<!--            {{ field }}-->
+<!--        {% endfor %}-->
+    </form>
+
+</body>
+</html>
+
+

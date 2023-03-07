@@ -1,0 +1,12 @@
+<table>
+    <tr>
+        <th>Bank Id</th>
+        <th>Bank Name</th>
+    </tr>
+    {% for bank in banks %}
+    <tr>
+        <td>{{ bank.id}} </td>
+        <td>{{bank.name}}</td>
+     </tr>
+    {% endfor %}
+</table>

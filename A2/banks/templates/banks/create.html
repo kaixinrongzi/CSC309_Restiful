@@ -1,0 +1,10 @@
+
+<form method="POST">
+      {% csrf_token %}
+      <p>Owner: {{ user }}</p>
+      {{ form.as_p }}
+      <p>
+        <label></label>
+        <input class="btn" type="submit" value="Create">
+      </p>
+</form>
