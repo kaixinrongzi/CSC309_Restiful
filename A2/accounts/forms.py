@@ -52,7 +52,7 @@ class RegisterForm(UserCreationForm):    # UserCreationForm is a subclass of Mod
                 errors["password1"].append("The password cannot contain more than 120 characters")
             else:
                 errors["password1"]=["The password cannot contain more than 120 characters"]
-        if email is not None and len(email) > 6:
+        if email is not None and len(email) > 120:
             errors["email"] = ["The email cannot contain more than 120 characters"]
 
         if errors != {}:
