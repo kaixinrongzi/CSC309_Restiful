@@ -43,7 +43,7 @@ class RegisterForm(UserCreationForm):    # UserCreationForm is a subclass of Mod
         # if len(username) == '':
         #     raise ValidationError("A user with that username already exists")
         errors = {}
-        if len(username) > 12:
+        if len(username) > 120:
             errors["username"] = ["The username cannot contain more than 120 characters"]
         if len(password1) < 8:
             errors["password1"] = ["This password is too short. It must contain at least 8 characters"]
