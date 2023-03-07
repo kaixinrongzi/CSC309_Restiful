@@ -46,8 +46,7 @@ class UserLogin(FormView):
 #     return redirect(reverse_lazy('login'))
 
 
-class UserLogout(LoginRequiredMixin, View):
-    login_url = reverse_lazy("accounts:login")
+class UserLogout(View):
     success_url = reverse_lazy("accounts:login")
 
     def get(self, request):

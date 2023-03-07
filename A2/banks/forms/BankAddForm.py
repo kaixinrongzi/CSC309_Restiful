@@ -17,4 +17,4 @@ class BankViewForm(ModelForm):
 class BankViewAllForm(ModelForm):
     class Meta:
         model = Bank
-        exclude = ('owner',)
+        fields = ["name", "description"]

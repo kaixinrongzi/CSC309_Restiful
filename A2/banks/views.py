@@ -59,8 +59,8 @@ class BankViewAll(ListView):
     form_class = BankViewAllForm
 
     def get_queryset(self):
-        user = self.request.user
-        banks = Bank.objects.filter(owner=user)
+        # user = self.request.user
+        banks = Bank.objects.all()
         return banks
 
     def get_context_data(self, **kwargs):
@@ -182,8 +182,7 @@ class BranchEdit(LoginRequiredMixin, UpdateView):
         full_path_lst = full_path.split("/")
         branch_id = full_path_lst[-3]
         print("branch_id:", branch_id)
-        branch = Branch.objects.filter(pk=branch_id)
-        return branch
+        return Branch.objects.filter(pk=branch_id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)  # context contains form
@@ -217,16 +216,17 @@ class BranchEdit(LoginRequiredMixin, UpdateView):
         if branch.bank.owner.pk != user.pk:
             return HttpResponse("FORBIDDEN", status=403)
 
-        context = {}
-        form = self.form_class({"name": branch.name,
-                                "transit_num": branch.transit_num,
-                                "address": branch.address,
-                                "email": branch.email,
-                                "capacity": branch.capacity})
-        context["form"] = form
-        context["user"] = user
-        context['link'] = "edit"
-        return render(request, self.template_name, context)
+        # context = {}
+        # form = self.form_class({"name": branch.name,
+        #                         "transit_num": branch.transit_num,
+        #                         "address": branch.address,
+        #                         "email": branch.email,
+        #                         "capacity": branch.capacity})
+        # context["form"] = form
+        # context["user"] = user
+        # context['link'] = "edit"
+        return super().get(request, *args, **kwargs)
+        # return render(request, self.template_name, context)
 
 
 
