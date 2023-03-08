@@ -1,0 +1,13 @@
+
+<form method="POST" action="">
+      {% csrf_token %}
+
+          {{ user }}
+          {{ form.as_p }}
+<!--          {{ error_msg }}-->
+          <p>
+            <label></label>
+            <input class="btn" type="submit" value="Create">
+          </p>
+
+</form>
