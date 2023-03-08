@@ -9,16 +9,6 @@
 <form method="POST" class="post-form" enctype="multipart/form-data" action="">
     {% csrf_token %}
     {% if link == 'edit' %}
-<!--        <h5>First Name</h5> {{form.as_p}}-->
-<!--        <h5>Last Name</h5>  {{form.}}-->
-<!--        <h5>Email</h5>-->
-<!--        <h5>Password1</h5>-->
-<!--        <h5>Password2</h5>-->
-<!--        <span>{{ user.first_name }}</span>-->
-<!--        <span>{{ user.last_name }}</span>-->
-<!--        <span>{{ user.email }}</span>-->
-<!--        <span>{{ user.password1 }}</span>-->
-<!--        <span>{{ user.password2 }}</span>-->
         <p><label>First Name: {{form.first_name }}</label></p>
         <p><label>Last Name: {{form.last_name}}</label></p>
         <p><label>Email: {{form.email}} </label></p>
