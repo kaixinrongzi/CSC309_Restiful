@@ -24,8 +24,15 @@ class UserRegister(CreateView):
     # note that ModelForm saves object automatically
     def form_valid(self, form):
         # self.request.session['from'] = 'register'
-
-        return super().form_valid(form)
+        user = form.save()
+        email = form.cleaned_data["email"]
+        first_name = form.cleaned_data["first_name"]
+        last_name = form.cleaned_data["last_name"]
+        user.email = email
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+        return HttpResponseRedirect(self.success_url, status=302)
 
 
 class UserLogin(FormView):

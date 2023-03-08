@@ -41,6 +41,7 @@ class RegisterForm(UserCreationForm):    # UserCreationForm is a subclass of Mod
         cleaned = super().clean()
         username = cleaned.get("username")
         password1 = cleaned.get("password1")
+        email = cleaned.get("email")
         # password2 = cleaned.get("password2")
         # email = cleaned.get("email")
         # first_name = cleaned.get("first_name")
