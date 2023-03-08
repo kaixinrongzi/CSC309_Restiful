@@ -76,9 +76,9 @@ class LoginForm(forms.Form):
 
     def clean(self):
         data = super().clean()
-        errors = {}
+        print(data)
         if 'username' not in data or 'password' not in data:
-            raise ValidationError({})
+            raise ValidationError({"username": 'Username or password is invalid'})
         username = data['username']
         password = data['password']
 
