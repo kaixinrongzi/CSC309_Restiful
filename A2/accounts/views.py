@@ -94,11 +94,13 @@ class UserProfileView(FormView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         print("user logined: ", self.request.user.is_authenticated)
-        json_response = [{'id': user.id,
-                          "username": user.username,
-                          "email": user.email,
-                          "first_name": user.first_name,
-                          "last_name": user.last_name}]
+        json_response = {'id': user.id,
+                         "username": user.username,
+                         "email": user.email,
+                         "first_name": user.first_name,
+                         "last_name": user.last_name}
+        # json_response = "{id: {0}, email: {1}, first_name: {2}, last_name: {3}}".format(user.id, user.email, user.first_name, user.last_name)
+        json_response = json.dumps(json_response)
         context['user_json'] = json_response
         context['link'] = 'view'
         context['user'] = user
@@ -111,11 +113,17 @@ class UserProfileView(FormView):
             return HttpResponse("Unauthorized", status=401)
         else:
             context = {}
+            # json_response = "{id: {0}, email: {1}, first_name: {2}, last_name: {3}}".format(int(user.id), user.email,
+            #                                                                                        user.first_name,
+            #                                                                                        user.last_name)
             json_response = {'id': user.id,
                              "username": user.username,
                              "email": user.email,
                              "first_name": user.first_name,
                              "last_name": user.last_name}
+
+            json_response = json.dumps(json_response)
+            print(json_response)
             context['user_json'] = json_response
             context['link'] = 'view'
             context['user'] = user

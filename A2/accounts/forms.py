@@ -45,6 +45,8 @@ class RegisterForm(UserCreationForm):    # UserCreationForm is a subclass of Mod
         errors = {}
         if username is not None and len(username) > 120:
             errors["username"] = ["The username cannot contain more than 120 characters"]
+
+
         if password1 is not None and len(password1) < 8:
             errors["password1"] = ["This password is too short. It must contain at least 8 characters"]
         if password1 is not None and len(password1) > 120:
