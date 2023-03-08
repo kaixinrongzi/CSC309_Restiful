@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSC309 A1 - Contact</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- TODO: complete me -->
+  <div class="overall contact">
+    <header>
+      <ul>
+        <li><a href="index.html"><span class="home">Home</span></a></li>
+        <li><a href="about.html"><Span class="about">About</span></a></li>
+        <li><a class="contact active" href="contact.html" class="contact"><span>Contact</span></a></li>
+      </ul>
+    </header>
+
+    <main>
+    <div class="myBody contact">
+      <img class="portrait" src="https://img1.baidu.com/it/u=2131143233,2928704221&fm=253&fmt=auto&app=138&f=JPEG?w=889&h=500">
+      <p class="name">Snow Zhou</p>
+      <p class="emailLink"><a class="email" href="mailto:snow.zhou@mail.utoronto.ca?subject=Bug Found&body= found the following bug on your website">snow.zhou@mail.utoronto.ca</a></p>
+      <form action="https://postman-echo.com/post" method="post" target="_blank">
+        <ul>
+          <li class="email"><label for="emailText">Your Email:&nbsp</label><input id="emailText" type="text" name="email"></li>
+          <li class="feedback"> <label for="feedbackText">Feedbacks:&nbsp</label> <textarea id="feedbackText" type="text" name="feedback" placeholder="Enter your feedback here" ></textarea></li>
+          <li id="file"><label class="file" for="attachFile">Attachments:&nbsp</label> <input id="attachFile" type="file" name="attachments"></li>
+          <li><input type="checkbox" name="consent" id="consent" value="yes"><label class="agreeToReceiveEmail" for="consent">You agree to receive emails from me</label></li>
+          <li class="send"><label></label><input type="submit" value="Send Feedback"> </li>
+        </ul>
+      </form>
+    </div>
+    </main>
+
+    <footer>
+      Copyright 2023 by zhouxuer
+    </footer>
+
+  </div>
+</body>
+
+</html>
