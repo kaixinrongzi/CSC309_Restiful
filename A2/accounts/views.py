@@ -129,13 +129,14 @@ class UserProfileView(FormView):
                              "first_name": user.first_name,
                              "last_name": user.last_name}
 
-            json_response = json.dumps(json_response)
-            print(json_response)
-            context['user_json'] = json_response
-            context['link'] = 'view'
-            context['user'] = user
-            print("view")
-            return render(request, self.template_name, context)
+            # json_response = json.dumps(json_response)
+            # print(json_response)
+            # context['user_json'] = json_response
+            # context['link'] = 'view'
+            # context['user'] = user
+            # print("view")
+            # return render(request, self.template_name, context)
+            return JsonResponse(json_response)
 
 
 class UserProfileEdit2(UserProfileView, UpdateView):

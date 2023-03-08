@@ -23,7 +23,6 @@
         <button type="submit" class="save btn btn-default">Update</button>
     {% endif %}
     {% if link == 'view' %}
-        {{ user_json }}
         <a class="btn" href="{% url 'accounts:editprofile' %}">Edit</a>
         <a class="btn" href="{% url 'accounts:logout' %}">LogOut</a>
     {% endif %}
