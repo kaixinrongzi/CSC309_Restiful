@@ -131,7 +131,12 @@ MEDIA_URL = "media/"
 
 # rest framework
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permsiions.IsAuthenticated',
-    ]
+        'rest_framework.permsiions.AllowAny',
+        # 'rest_framework.permsiions.IsAuthenticated',
+    ],
 }

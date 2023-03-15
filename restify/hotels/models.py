@@ -5,9 +5,13 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 # Create your models here.
 
+# def default_available_date():
+#     return date.today() + timedelta(days=30)
+
 class Hotel(models.Model):
     name = models.CharField(max_length=200)
-    avaliable_data = models.DateField()  # to do
+    avaliable_data = models.DateField(null=True, blank=True)
+    # avaliable_data = models.DateField(default=default_available_date, null=True, blank=True)
     detail = models.CharField(max_length=200)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='owner', null=True)
     address = models.CharField(max_length=200)
