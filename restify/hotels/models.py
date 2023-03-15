@@ -10,12 +10,13 @@ from django.contrib.contenttypes.models import ContentType
 
 class Hotel(models.Model):
     name = models.CharField(max_length=200)
-    avaliable_data = models.DateField(null=True, blank=True)
+    available_data = models.DateField(null=True, blank=True)
     # avaliable_data = models.DateField(default=default_available_date, null=True, blank=True)
     detail = models.CharField(max_length=200)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='owner', null=True)
     address = models.CharField(max_length=200)
     rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidatior(0), MaxValueValidator(5)])
+    capacity = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):
         return f"{self.name}"
