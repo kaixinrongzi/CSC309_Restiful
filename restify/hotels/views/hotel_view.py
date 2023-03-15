@@ -4,7 +4,12 @@ from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, D
 
 class AddHotel(CreateAPIView):
     pass
+
+class AllHotel(ListAPIView):
+    pass
+
 class HotelByfilter(ListAPIView):
     pass
-class AllHotel(ListAPIView):
+
+class HotelOrderBy(ListAPIView):
     pass
