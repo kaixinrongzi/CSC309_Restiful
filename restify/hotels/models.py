@@ -10,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 
 class Hotel(models.Model):
     name = models.CharField(max_length=200)
-    detail = models.CharField(max_length=200)
+    description = models.CharField(max_length=200)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='owner', null=True)
     address = models.CharField(max_length=200)
     rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidatior(0), MaxValueValidator(5)])
