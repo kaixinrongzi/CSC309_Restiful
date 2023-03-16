@@ -8,7 +8,7 @@ class AddHotel(CreateAPIView):
 class AllHotel(ListAPIView):
     pass
 
-
+# filter and order by
 class SearchHotel(ListAPIView):
     pass
 
