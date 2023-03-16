@@ -8,8 +8,9 @@ class AddHotel(CreateAPIView):
 class AllHotel(ListAPIView):
     pass
 
-class HotelByfilter(ListAPIView):
+
+class SearchHotel(ListAPIView):
     pass
 
-class HotelOrderBy(ListAPIView):
+class DeleteHotel(DestroyAPIView):
     pass

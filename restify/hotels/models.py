@@ -46,12 +46,22 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.detail}"
 
-
+# Pending: the user makes a request to reserve a property on one or more consecutive dates.
+# Denied: the host, i.e., the owner of the property, declines the reservation request. 
+# Expired: the host did not respond to a reservation request within a user-defined time window.
+# Approved: the reservation request is approved.
+# Canceled: the reservation was approved but later canceled by the user.
+# Terminated: the reservation was approved but later canceled by the host.
+# Finished: the reservation is realized, i.e., the user went to the property and stayed there.
 class Reservation(models.Model):
     STATUS = [
-        ('P', 'Pending'), 
-        ('C', 'Cancelled'), 
         ('A', 'Approved'),
+        ('P', 'Pending'), 
+        ('Ca', 'Cancelled'), 
+        ('D', 'Denied'), 
+        ('E', 'Expired'),
+        ('T', 'Terminated'),
+        ('F', 'Finished'),
     ]
     guest = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)

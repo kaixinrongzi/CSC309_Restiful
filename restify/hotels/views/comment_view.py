@@ -8,13 +8,14 @@ class AddComment(CreateAPIView):
     serializer_class = CommentSerializer
     permission_class = [IsAuthenticated]
 
-    
 
 class GetComment(ListAPIView):
     pass
+
 # host reply to the public comment about his property. 
 class FollowComment1(CreateAPIView):
     pass
+
 # guest reply to the host's comment
 class FollowComment2(CreateAPIView):
     pass
