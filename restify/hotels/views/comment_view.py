@@ -1,10 +1,14 @@
 from django.shortcuts import render
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
+from ..serializers import CommentSerializer
 # Create your views here.
 
 class AddComment(CreateAPIView):
+    serializer_class = CommentSerializer
     permission_class = [IsAuthenticated]
+
+    
 
 class GetComment(ListAPIView):
     pass

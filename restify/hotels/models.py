@@ -17,7 +17,7 @@ class Hotel(models.Model):
     capacity = models.IntegerField(validators=[MinValueValidator(0)])
     beds = models.IntegerField(validators=[MinValueValidator(0)])
     baths = models.IntegerField(validators=[MinValueValidator(0)])
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
     comments = GenericRelation(Comment, related_query_name='hotel')
 
     def __str__(self):
