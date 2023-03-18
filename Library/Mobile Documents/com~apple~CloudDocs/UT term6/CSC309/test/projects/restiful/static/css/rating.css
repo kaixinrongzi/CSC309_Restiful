@@ -1,0 +1,21 @@
+
+main {
+    background-color: lightblue;
+}
+form {
+    margin: 60px;  
+}
+form label {
+    font-weight: bold;
+    color: rosybrown;
+}
+h1 {
+    color: brown;
+    padding: 30px;
+}
+button a{
+    color: white;
+}
+a.hover {
+    
+}

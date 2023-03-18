@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <title>User Login</title>
+   <link rel="stylesheet" href="normalize.min.css">
+<!--	<link rel="stylesheet" href="./style.css">-->
+	<link href="/P1/css/style1.css" rel="stylesheet">
+    <link href="/P1/css/style2.css" rel="stylesheet">
+    <link href="/P1/css/userAccount.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link href="/P1/css/bulma/bulma.css" rel="stylesheet">
+    <link href="/P1/css/bulma/bulma.main.css" rel="stylesheet">
+    <link href="/P1/css/bulma/bulma-rtl.main.css" rel="stylesheet">
+    <link href="/P1/css/bulma/bulma-rtl.min.css" rel="stylesheet">
+    <link href="/P1/css/bulma/bulma.css.map" rel="stylesheet">
+    <link href="/P1/css/bulma/bulma-rtl.css.map" rel="stylesheet">
+</head>
+  <body>
+    <header>
+       <ul>
+           <a href="../index.html"><li>Restiful, bring the world to you</li></a>
+         <li>Travelling to</li>
+         <li>
+            <details>
+                <summary>earth</summary>
+                <ul class="submenu">
+                     <li><a href="../RegLog/login.html">Sign In</a></li>
+                     <li><a href="../RegLog/register.html">Sign Up</a></li>
+                     <li><a href="I have a property to post">Post Your Property</a></li>
+                     <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </details>
+
+         </li>
+      </ul>
+</header>
+<main class="userAccount">
+      <div class="aboutMe">
+        <p>About Me</p>
+        <div class="personalInfo">
+            <div class="portrait"></div>
+            <ul class="info">
+                <li><span class="userName one">User Name: </span><span>kaixinrongzi</span></li>
+                <li><span class="phoneNum one">Phone Number: </span><span>222-222-2222</span></li>
+                <li><span class="email one">Email: </span><span>idk@gmail.com</span></li>
+                <li><span class="avatar one">Avatar: </span><span>avatar</span></li>
+            </ul>
+        </div>
+      </div>
+
+      <div class="myRenting">
+          <ul>
+              <li><span class="title">Where I booked</span></li>
+              <li><span>Next Page</span><img class="arrow" src="data:image/png;base64,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"></li>
+          </ul>
+          <div class="rentingInfo">
+              <div class="rentingOne">
+                  <img src="https://a0.muscache.com/im/pictures/monet/Luxury-736940503519190941/original/8b28b5bc-ce70-43fa-a54f-2ff25823bfeb?im_w=960">
+                  <p>100 Harbour Street, Sidney, Australia </p>
+              </div>
+              <div class="rentingTwo">
+                  <img src="https://a0.muscache.com/im/pictures/miso/Hosting-49484467/original/90987482-02b9-480d-9c42-8fdd41965902.jpeg?im_w=720">
+                  <p>5 St. Joseph Street, Toronto, Canada</p>
+              </div>
+              <div class="rentingThree">
+                  <img src="https://thumbs.cityrealty.com/assets/smart/1004x/webp/d/d9/d91c65a7e01fe4d9491d9883a76d8a01342db7df/25-west-28th-street-01.jpg">
+                  <p>450NJ, New York, U.S</p>
+              </div>
+          </div>
+      </div>
+
+      <div class="myProperty">
+            <ul>
+              <li><span class="title">My Properties</span></li>
+              <li><span>Next Page</span><img class="arrow" src="data:image/png;base64,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"></li>
+          </ul>
+          <div class="rentingInfo">
+              <div class="rentingOne">
+                  <img src="https://a0.muscache.com/im/pictures/prohost-api/Hosting-22769139/original/63e38fff-ec53-438c-b29f-c0b1fcd52fe1.jpeg?im_w=1200">
+                  <p>88 Harbour Street, Sidney, Australia </p>
+              </div>
+              <div class="rentingTwo">
+                  <img src="https://a0.muscache.com/im/pictures/miso/Hosting-51137864/original/f550db2b-cdbb-4b66-acf5-d0d7361435a5.jpeg?im_w=960">
+                  <p>57 St. Joseph Street, Toronto, Canada</p>
+              </div>
+              <div class="rentingThree">
+                  <img src="https://a0.muscache.com/im/pictures/miso/Hosting-51137864/original/8444b697-9a4e-4500-8625-b5aea3d92190.jpeg?im_w=1200">
+                  <p>333NJ, New York, U.S</p>
+              </div>
+          </div>
+      </div>
+</main>
+
+<footer>
+        <p>Group2788 Copyright</p>
+</footer>
+</body>
+</html>
