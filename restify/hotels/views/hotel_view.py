@@ -4,11 +4,15 @@ from rest_framework.permissions import IsAuthenticated
 from django.core.exceptions import PermissionDenied
 from ..serializers import HotelSerializer, HotelAvailabilitySerializer
 from ..models import Hotel, HotelAvailability
+from rest_framework.filters import OrderingFilter
+from rest_framework.pagination import PageNumberPagination
 # Create your views here.
+# from django.contrib.auth.models import User as MyUser
 
 class AddHotel(CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = HotelSerializer
+    
 
 class AddAvailability(CreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -78,15 +82,20 @@ class SearchHotelAvailability(ListAPIView):
         
 
 # filter and order
-class SearchHotel(ListAPIView):
+class SearchHotel(SearchHotelAvailability, ListAPIView):
     serializer_class = HotelSerializer
-    
+    pagination_class = PageNumberPagination
+    filter_backends = [OrderingFilter]
+    ordering_fields = ['name', 'rating']
+
     def get_queryset(self):
         query = super().get_queryset()
         address = self.request.query_params.get('address', None)
         capacity = self.request.query_params.get('capacity', None)
         beds = self.request.query_params.get('beds', None)
         baths = self.request.query_params.get('baths', None)
+
+        order_by = self.request.query_params.get('ordering', None)
         
         if address:
             query.filter(address__icontains=address)
@@ -96,13 +105,11 @@ class SearchHotel(ListAPIView):
             query.filter(beds__gte=beds)
         if baths:
             query.filter(baths__gte=baths)
-
+        if order_by:
+            query = self.filter_queryset(query)
+        query = query.distinct()
         return query
-        
 
-        
-
-    
 
 class DeleteHotel(DestroyAPIView):
     permission_classes = [IsAuthenticated]

@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-# from django.contrib.auth.models import User
+# from django.contrib.auth.models import User as MyUser
 # import sys
 # sys.path.append('path/to/accounts')
 from accounts.models import MyUser
@@ -44,7 +44,7 @@ class HotelAvailability(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
-    price = models.DecimalField(decimal_places=2, validators=[MinValueValidator(0)])
+    price = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0)])
 
     def __str__(self):
         return f"{self.hotel} available from {self.start_date} to {self.end_date}"
@@ -71,7 +71,7 @@ class Reservation(models.Model):
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
-    state = models.CharField(choices=STATUS)
+    state = models.CharField(choices=STATUS, max_length=100)
 
 class Notification(models.Model):
     reciever = models.ForeignKey(MyUser, on_delete=models.CASCADE)
