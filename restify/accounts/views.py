@@ -10,7 +10,7 @@ from django.http import QueryDict
 from rest_framework.authentication import TokenAuthentication
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from .forms import UserSerializer, UserLoginSerializer, UserUpdateSerializer
+from .serializer import UserSerializer, UserLoginSerializer, UserUpdateSerializer
 from .models import MyUser
 
 

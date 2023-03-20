@@ -2,11 +2,11 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+sys.path.append('path/to/accounts')
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hotel.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'p2.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

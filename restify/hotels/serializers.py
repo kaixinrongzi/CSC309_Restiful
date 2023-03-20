@@ -1,10 +1,15 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Hotel, HotelAvailability, Comment, Reservation
+from .models import Hotel, HotelAvailability, Comment, Reservation, Notification
 
 class HotelSerializer(ModelSerializer):
     class Meta:
         model = Hotel
-        fields = ['name', 'address', 'description', 'capacity', 'beds', 'baths', 'rating']
+        fields = ['id', 'name', 'address', 'description', 'capacity', 'beds', 'baths', 'rating']
+
+class HotelAvailabilitySerializer(ModelSerializer):
+    class Meta:
+        model = HotelAvailability
+        fields = ['id', 'hotel', 'start_date', 'end_date', 'price']
 
 class CommentSerializer(ModelSerializer):
     class Meta:
