@@ -56,7 +56,7 @@ class UpdateHotel(RetrieveAPIView, UpdateAPIView):
         print(self.request.user)
         if hotel.owner != self.request.user:
             raise PermissionDenied('You do not have the permission to update the hotel')
-        serialzer.save()
+        serializer.save()
 
 
 # class AllHotel(ListAPIView):
