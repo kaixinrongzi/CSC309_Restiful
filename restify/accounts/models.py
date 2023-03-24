@@ -1,9 +1,11 @@
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.core.mail import send_mail
 # from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import PermissionsMixin
-# Create your models here.
 
+
+# Create your models here.
 
 
 class AccountManager(BaseUserManager):
@@ -58,6 +60,9 @@ class MyUser(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
+    # booking_notification = models.BooleanField(default=False)
+    # comment_notification = models.BooleanField(default=False)
+    # rating_notification = models.BooleanField(default=False)
 
     objects = AccountManager()
 
@@ -81,4 +86,10 @@ class MyUser(AbstractBaseUser):
                 "password": self.password,
                 "email": self.email,
                 "phone_number": self.phone_number}
+
+    def get_notified(self, notification_type):
+        send_mail('new ' + notification_type,
+                  'You have a new ' + notification_type,
+                  'restiful@example.com',
+                  [self.email])
 
