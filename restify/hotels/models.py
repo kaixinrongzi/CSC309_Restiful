@@ -24,6 +24,16 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.detail}"
 
+class Comment(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    rating = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
+    detail = models.CharField(max_length=1000)
+    author = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True, blank=True)
+    def __str__(self):
+        return f"{self.detail}"
+
 class Hotel(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=200)
@@ -50,6 +60,7 @@ class HotelAvailability(models.Model):
         return f"{self.hotel} available from {self.start_date} to {self.end_date}"
 
 
+
 # Pending: the user makes a request to reserve a property on one or more consecutive dates.
 # Denied: the host, i.e., the owner of the property, declines the reservation request. 
 # Expired: the host did not respond to a reservation request within a user-defined time window.
@@ -57,6 +68,7 @@ class HotelAvailability(models.Model):
 # Canceled: the reservation was approved but later canceled by the user.
 # Terminated: the reservation was approved but later canceled by the host.
 # Finished: the reservation is realized, i.e., the user went to the property and stayed there.
+
 class Reservation(models.Model):
     STATUS = [
         ('A', 'Approved'),
@@ -67,11 +79,75 @@ class Reservation(models.Model):
         ('T', 'Terminated'),
         ('F', 'Finished'),
     ]
+
     guest = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     state = models.CharField(choices=STATUS, max_length=100)
+    guests = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ['-start_date']
+
+    def __str__(self):
+        return f"reservation {self.state} from {self.start_date} to {self.end_date} by {self.user.username}"
+
+    @property
+    def is_host(self):
+        return self.user.is_host
+
+    @property
+    def is_guest(self):
+        return self.user.is_guest
+
+    @property
+    def is_pending(self):
+        return self.state == 'pending'
+
+    @property
+    def is_approved(self):
+        return self.state == 'approved'
+
+    @property
+    def is_denied(self):
+        return self.state == 'denied'
+
+    @property
+    def is_cancelled(self):
+        return self.state == 'cancelled'
+        
+    # @is_guest
+    def reserve(self):
+        self.state = 'pending';
+        self.save()
+
+    # @is_guest
+    def cancel(self):
+        if self.is_pending:
+            self.state = 'cancelled'
+        self.save()
+
+    # @is_host
+    def approve(self):
+        if self.is_reserve_pending:
+            self.state = 'approved'
+        elif self.is_cancel_pending:
+            self.state = "cancelled"
+        self.save()
+    
+    # @is_host
+    def deny(self):
+        if self.is_pending:
+            self.state = 'denied'
+            self.save()
+
+    # @is_host
+    def terminate(self):
+        if self.state.is_approved:
+            self.state = 'terminated'
+            self.save()
+    
 
 class Notification(models.Model):
     reciever = models.ForeignKey(MyUser, on_delete=models.CASCADE)
