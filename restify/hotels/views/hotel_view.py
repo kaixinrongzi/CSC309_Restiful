@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, DestroyAPIView, RetrieveAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.core.exceptions import PermissionDenied
 from ..serializers import HotelSerializer, HotelAvailabilitySerializer
 from ..models import Hotel, HotelAvailability
@@ -13,21 +13,30 @@ class AddHotel(CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = HotelSerializer
     
+    def perform_create(self, serializer):
+        serializer.save(owner = self.request.user)
 
 class AddAvailability(CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = HotelAvailabilitySerializer
 
-    def create(self, request, *args, **kwargs):
+    def perform_create(self, serializer):
         hotel_id = self.kwargs['pk']
         hotel = get_object_or_404(Hotel.objects.all(), pk=hotel_id)
+        print(hotel)
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
         serializer.save(hotel=hotel)
-        headers = self.get_success_headers(serializer.data)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    # def create(self, request, *args, **kwargs):
+    #     hotel_id = self.kwargs['pk']
+    #     hotel = get_object_or_404(Hotel.objects.all(), pk=hotel_id)
+    #     print(hotel)
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save(hotel=hotel)
+    #     headers = self.get_success_headers(serializer.data)
+
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 # class deleteavailability
 
@@ -37,20 +46,22 @@ class UpdateHotel(RetrieveAPIView, UpdateAPIView):
     serializer_class = HotelSerializer
 
     def get_object(self):
-        obj = get_object_or_404(Hotel, id=elf.kwargs['pk'])
+        obj = get_object_or_404(Hotel, id=self.kwargs['pk'])
         return obj
 
-    def update(self, request, *args, **kwargs):
+    def perform_update(self, serializer):
         hotel = self.get_object()
+        print(hotel)
+        print(hotel.owner)
+        print(self.request.user)
         if hotel.owner != self.request.user:
             raise PermissionDenied('You do not have the permission to update the hotel')
-        serializer = self.get_serializer(hotel, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serialzer.save()
+
 
 # class AllHotel(ListAPIView):
 #     serializer_class = HotelSerializer
-class UpdateAvailability(UpdateAPIView):
+class UpdateAvailability(RetrieveAPIView, UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = HotelAvailabilitySerializer
 
@@ -58,28 +69,33 @@ class UpdateAvailability(UpdateAPIView):
         obj = get_object_or_404(HotelAvailability, id=self.kwargs['pk'])
         return obj
 
-    def update(self, request, *args, **kwargs):
+    def perform_update(self, serializer):
         hotel_availability = self.get_object()
         hotel = hotel_availability.hotel
 
         if hotel.owner != self.request.user:
             raise PermissionDenied('You do not have the permission to update the hotel')
-        availability_serializer = self.get_serializer(hotel_availability, data=request.data, partial=True)
-        availability_serializer.is_valid(raise_exception=True)
-        availability_serializer.save()
+        # availability_serializer = self.get_serializer(hotel_availability, data=request.data, partial=True)
+        # availability_serializer.is_valid(raise_exception=True)
+        serializer.save()
 
 class SearchHotelAvailability(ListAPIView):
     serializer_class = HotelAvailabilitySerializer
 
     def get_queryset(self):
-        start_date = self.request.query_params.get('start_date', None)
-        end_date = self.request.query_params.get('end_date', None)
+        start = self.request.query_params.get('start_date', None)
+        print(start)
+        end = self.request.query_params.get('end_date', None)
+        beds = self.request.query_params.get('beds', None)
         query = HotelAvailability.objects.all()
-        if start_date and end_date:
-            query = query.filter(start_date__lte=start_date)
-            query = query_filter(end_date__gte=end_date)
-        return query.distinct('hotel').values('hotel__id', 'hotel__name', 'hotel__address', 'hotel__description', 'hotel__rating', 'hotel__capacity', 'hotel__beds', 'hotel__baths')
-        
+        obj = HotelAvailability.objects.all().first()
+        if start and end:
+            query = query.filter(start_date__lte=start)
+            query = query.filter(end_date__gte=end)  
+        # print(query.values('hotel__id'))
+        return query
+        # return query.values('hotel__id', 'hotel__name', 'hotel__address', 'hotel__description', 'hotel__rating', 'hotel__capacity', 'hotel__beds', 'hotel__baths').distinct()
+        # return query.values_list('hotel')
 
 # filter and order
 class SearchHotel(SearchHotelAvailability, ListAPIView):
@@ -89,7 +105,11 @@ class SearchHotel(SearchHotelAvailability, ListAPIView):
     ordering_fields = ['name', 'rating']
 
     def get_queryset(self):
-        query = super().get_queryset()
+        # query_before = super().get_queryset()
+        # print(query_before)
+        # query = query_before.values('hotel__id', 'hotel__name', 'hotel__address', 'hotel__description', 'hotel__rating', 'hotel__capacity', 'hotel__beds', 'hotel__baths').distinct()
+        # print(query)
+        query = Hotel.objects.all()
         address = self.request.query_params.get('address', None)
         capacity = self.request.query_params.get('capacity', None)
         beds = self.request.query_params.get('beds', None)
@@ -106,7 +126,7 @@ class SearchHotel(SearchHotelAvailability, ListAPIView):
         if baths:
             query.filter(baths__gte=baths)
         if order_by:
-            query = self.filter_queryset(query)
+            query = query.order_by(order_by)
         query = query.distinct()
         return query
 

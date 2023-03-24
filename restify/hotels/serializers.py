@@ -1,16 +1,24 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, IntegerField
 from django.contrib.contenttypes.models import ContentType
 from .models import Hotel, HotelAvailability, Comment, Reservation, Notification
 
 class HotelSerializer(ModelSerializer):
     class Meta:
         model = Hotel
-        fields = ['id', 'name', 'address', 'description', 'capacity', 'beds', 'baths', 'rating']
+        fields = ['id', 'name', 'address', 'description', 'capacity', 'beds', 'baths', 'rating', 'owner']
+
+        # def create(self, validated_data):
+        #     print(self.context['request'].user)
+        #     return super().create(validated_data)
 
 class HotelAvailabilitySerializer(ModelSerializer):
+    beds = IntegerField(read_only=True, source='hotel.beds')
+    baths = IntegerField(read_only=True, source='hotel.baths')
+
     class Meta:
         model = HotelAvailability
-        fields = ['id', 'hotel', 'start_date', 'end_date', 'price']
+        # fields = '__all__'
+        fields = ['id', 'hotel', 'start_date', 'end_date', 'price', 'beds', 'baths']
 
 class CommentSerializer(ModelSerializer):
     class Meta:

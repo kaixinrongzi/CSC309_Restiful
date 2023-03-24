@@ -26,22 +26,22 @@ class Comment(models.Model):
 
 class Hotel(models.Model):
     name = models.CharField(max_length=200)
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, null=True, blank=True)
     owner = models.ForeignKey(MyUser, on_delete=models.SET_NULL, related_name='owner', null=True)
-    address = models.CharField(max_length=200)
-    rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    address = models.CharField(max_length=200, null=True, blank=True)
+    rating = models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidator(0), MaxValueValidator(5)], null=True, blank=True)
     capacity = models.IntegerField(validators=[MinValueValidator(0)])
     beds = models.IntegerField(validators=[MinValueValidator(0)])
     baths = models.IntegerField(validators=[MinValueValidator(0)])
     is_active = models.BooleanField(default=True)
-    comments = GenericRelation(Comment, related_query_name='hotel')
+    comments = GenericRelation(Comment, related_query_name='hotel', null=True, blank=True)
 
     def __str__(self):
         return f"{self.name}"
 
 
 class HotelAvailability(models.Model):
-    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, null=True, blank=True)
     start_date = models.DateField()
     end_date = models.DateField()
     price = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0)])
