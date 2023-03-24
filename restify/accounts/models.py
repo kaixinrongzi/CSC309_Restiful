@@ -90,6 +90,6 @@ class MyUser(AbstractBaseUser):
     def get_notified(self, notification_type):
         send_mail('new ' + notification_type,
                   'You have a new ' + notification_type,
-                  'restiful@example.com',
+                  'maryzhou0218@example.com',
                   [self.email])
 
