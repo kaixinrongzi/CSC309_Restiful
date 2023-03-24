@@ -10,8 +10,12 @@ from django.http import QueryDict
 from rest_framework.authentication import TokenAuthentication
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from .serializer import UserSerializer, UserLoginSerializer, UserUpdateSerializer
+from .forms import UserSerializer, UserLoginSerializer, UserUpdateSerializer
 from .models import MyUser
+import sys
+sys.path.append("..")
+from hotels.serializers import CommentAddSerializer
+from hotels.models import Reservation
 
 
 # from django.contrib.auth.models import UserProfile
@@ -34,8 +38,8 @@ class UsersCreate(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         print("29")
         self.perform_create(serializer)
-        # new_user = MyUser.objects.create_user(new_user["username"], new_user["password"], new_user["email"], new_user["phone_number"])
-        # new_user.save()
+        # # new_user = MyUser.objects.create_user(new_user["username"], new_user["password"], new_user["email"], new_user["phone_number"])
+        # # new_user.save()
         # serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -43,7 +47,7 @@ class UsersCreate(CreateAPIView):
 
 class UsersLogin(ListAPIView):
     serializer_class = UserLoginSerializer
-   
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return Response()
@@ -124,11 +128,26 @@ class UsersUpdate(UpdateAPIView):
     # authentication_classes = (TokenAuthentication)
 
     def update(self, request, *args, **kwargs):
+        # check what the user has updated?
+        new_username = request.data['username']
+        new_pwd = request.data['password']
+        new_email = request.data['email']
+        new_phone = request.data['phone_number']
+
+        # print("137: ", new_username, new_pwd, new_email, new_phone)
+
         user = request.user
-        exist_user = MyUser.objects.filter(username=request.data['username']).first()
-        print('exist_user:', exist_user)
-        if user.username != request.data['username'] and exist_user is not None:
-            return Response({"message": "failed", "details": 'username already exists'})
+
+        if new_username != "":
+            exist_users = MyUser.objects.filter(username=request.data['username'])
+            print(exist_users)
+            if exist_users == {}:
+                exist_user = None
+            else:
+                exist_user = exist_users.first()
+            print('exist_user:', exist_user)
+            if user.username != new_username and exist_user is not None:
+                return Response({"message": "failed", "details": 'username already exists'})
 
         # user = MyUser.objects.get(pk=user.pk)
         # delete = False
@@ -140,13 +159,12 @@ class UsersUpdate(UpdateAPIView):
         # if delete:
         #     user = request.user
 
-        data = request.data
         username_change = True
         ordinary_dict = {'username': request.data['username'],
                          'password': request.data['password'],
                          'email': request.data['email'],
                          'phone_number': request.data['phone_number']}
-        if user.username == request.data['username']:  # keep the username
+        if user.username == new_username or new_username == '':  # keep the username
             print("no change for the username")
             ordinary_dict.pop('username')
             # query_dict = QueryDict('', mutable=True)
@@ -155,7 +173,8 @@ class UsersUpdate(UpdateAPIView):
             username_change = False
 
         email_change = True
-        if user.email == request.data['email']:  # keep the email
+        print(user.email)
+        if user.email == new_email or new_email == '':  # keep the email
             print("no change for the email")
             ordinary_dict.pop('email')
             # query_dict = QueryDict('', mutable=True)
@@ -163,11 +182,26 @@ class UsersUpdate(UpdateAPIView):
             # data = ordinary_dict
             email_change = False
 
+        pwd_change = True
+        if new_pwd == '':    #keep the password
+            print("no change for the password")
+            ordinary_dict.pop('password')
+            pwd_change = False
+
+        phone_change = True
+        if new_phone == '':  # keep the phone number
+            print("no change for the phone")
+            ordinary_dict.pop('phone_number')
+            phone_change = False
+
         query_dict = QueryDict('', mutable=True)
         query_dict.update(ordinary_dict)
         data = ordinary_dict
 
+        print("data:", data)
         serializer = self.get_serializer(data=data, partial=True)
+        print("serializer:", serializer)
+
         # data = serializer.validate(request.data)
         # print(data)
         # else:
@@ -191,21 +225,84 @@ class UsersUpdate(UpdateAPIView):
                 # serializer = self.get_serializer(request.data)
                 user = MyUser.objects.get(username=user.username)
                 print("178")
+
+                # email = user.email
+                # username = user.username
+                # if username_change:    # email keeps
+                #     username = request.data['username']
+                # if email_change:       #username keeps
+                #     email = request.data['email']
+                #
+                # password = request.data['password']
+                # if not pwd_change:
+                #     password = user.password
+                # phone_number = request.data["phone_number"]
+                # if not phone_change:
+                #     phone_number = user.phone_number
+
+                if 'username' not in data:
+                    data['username'] = user.username
+                if 'password' not in data:
+                    data['password'] = user.password
+                if 'email' not in data:
+                    data['email'] = user.email
+                if 'phone_number' not in data:
+                    data['phone_number'] = user.phone_number
+
                 user.delete()
+
                 if MyUser.objects.filter(username=request.user.username).first() is None:
                     print("delete successfully")
                 else:
                     print("fail to delete")
-                update_user = MyUser.objects.create_user(request.data['username'], request.data['password'],
-                                                         request.data['email'], request.data['phone_number'])
-                update_user.set_password(request.data['password'])
-                user = update_user
-                serializer = self.get_serializer(data=request.data, partial=True)
-                if serializer.is_valid():
+
+                # update_user = MyUser.objects.create_user(username=username, password=password, email=email, phone_number=phone_number)
+                # update_user.set_password(password)
+                # print("update_user", update_user.get_map())
+                serializer = self.get_serializer(data=data, partial=True)
+                if serializer.is_valid(raise_exception=True):
+                    print("188")
+                    update_user = serializer.save()
+                    print(update_user.get_map())
+                    # update_user.set_password(data['password'])
+                    update_user.save()
+                    if MyUser.objects.filter(username=update_user.username).first() is None:
+                        print("fail to add")
+                    else:
+                        print("success to add")
+
+            else:
+                user = MyUser.objects.get(username=user.username)
+                new_pwd = request.data["password"]
+                if not pwd_change:
+                    new_pwd = user.password
+                new_email = request.data["password"]
+                if not phone_change:
+                    new_phone = user.phone_number
+                update_user = MyUser.objects.create_user(new_username, new_pwd, new_email, new_phone)
+                update_user.set_password(new_pwd)
+                serializer = self.get_serializer(data=update_user.get_map(), partial=True)
+                if serializer.is_valid(raise_exception=True):
                     print("188")
                     serializer.save()
-            else:
-                serializer.save()
+                    update_user.save()
+            # serializer.save()
+            #
+            # if not username_change:
+            #     new_username = user.username
+            # if not pwd_change:
+            #     new_pwd = user.password
+            # if not email_change:
+            #     new_email = user.email
+            # if not phone_change:
+            #     new_phone = user.phone_number
+            #
+            # user.username = new_username
+            # user.set_password(new_pwd)
+            # user.email = new_email
+            # user.phone_number = new_phone
+            # user.save()
+
             # update_user = MyUser.objects.create_user(request.data['username'], request.data['password'], request.data['email'], request.data['phone_number'])
             # update_user.set_password(request.data['password'])
             # update_user.save()
@@ -216,8 +313,8 @@ class UsersUpdate(UpdateAPIView):
             #                                       request.data['password'],
             #                                       request.data['email'],
             #                                       request.data['phone_number'])
-            user.save()
-            return Response(user.get_map())
+            # user.save()
+            return Response(update_user.get_map())
             # user.username = request.data['username']
             # user.set_password(request.data['username'])
             # user.email = request.data['email']
@@ -292,6 +389,7 @@ class UsersLogout(APIView):
     def get(self, request):
         username = request.user.username
         logout(request)
+        request.user.get_notified("logout")
         return Response({username: "logout"})
 
 
@@ -308,3 +406,27 @@ class UsersProfileView(ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return MyUser.objects.filter(username=user.username)
+
+
+class AddComment(CreateAPIView):
+    serializer_class = CommentAddSerializer
+    permission_class = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        comment = request.data
+        serializer = self.get_serializer(data=comment)
+        serializer.is_valid(raise_exception=True)
+
+        # check if user has ever lived in the hotel indicated in request.data
+        lived_records = Reservation.objects.filter(guest=request.user, STATUS='finished')
+        for record in lived_records:
+            if record.hotel == comment['hotel']:
+                self.perform_create(serializer)
+                headers = self.get_success_headers(serializer.data)
+                # notify property owner
+                request.user.get_notified("comment")
+                return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response({"error": "please just comment on the hotels you have ever lived"}, status=status.HTTP_403_FORBIDDEN)
+
+
+
