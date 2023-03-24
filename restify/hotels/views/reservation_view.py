@@ -28,18 +28,36 @@ class ReservationList(generics.ListCreateAPIView):
 
 class ReservationReserve(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = Reservation.objects.all()
+    # queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        room = get_object_or_404(Hotel, id= request.data["id"])
-        if request.user == room.host:
-            return Response({"detail": "You cannot reserve a room in your own hotel."}, status=status.HTTP_403_FORBIDDEN)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        hotel_id = request.data.get('hotel')
+        hotel = get_object_or_404(Hotel, id=hotel_id)
+
+        validated_data = request.data.copy()
+        validated_data['hotel'] = hotel.id
+        validated_data['guest'] = request.user.id
+        validated_data['state'] = 'P'
+
+        # create and return the reservation object
+        serializer = self.get_serializer(data=validated_data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+
+    # def post(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     hotel = get_object_or_404(Hotel, id= request.data["id"])
+    #     if request.user == hotel.owner:
+    #         return Response({"detail": "You cannot reserve a room in your own hotel."}, status=status.HTTP_403_FORBIDDEN)
+    #     if serializer.is_valid():
+    #         serializer.save(guest=request.user)
+    #         serializer.save(hotel=hotel)
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ReservationCancel(generics.UpdateAPIView):
     def put(self, request, pk):

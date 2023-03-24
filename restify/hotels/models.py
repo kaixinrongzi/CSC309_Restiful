@@ -80,12 +80,12 @@ class Reservation(models.Model):
         ('F', 'Finished'),
     ]
 
-    guest = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE)
+    guest = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True, blank=True)
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, null=True, blank=True)
     start_date = models.DateField()
     end_date = models.DateField()
-    state = models.CharField(choices=STATUS, max_length=100)
-    guests = models.PositiveIntegerField()
+    state = models.CharField(choices=STATUS, max_length=100, default='pending')
+    guests = models.PositiveIntegerField(default=1)
 
     class Meta:
         ordering = ['-start_date']
