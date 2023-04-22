@@ -1,0 +1,48 @@
+* {
+    margin: 0px;
+}
+.container {
+    display: flex;
+    margin: 0px;
+    width: 100%;
+    align-items: flex-start;
+}
+h1 {
+    color:navy;
+    padding: 30px
+}
+
+.container .upcoming td {
+    background-color: hsl(197, 71%, 73%);
+}
+
+.container td {
+    /* background-color: antiquewhite; */
+    padding: 10px;
+    text-align: center;
+    border-color:white;
+    border-style: solid;
+    border-width: 0px 0px 30px 0px;
+}
+
+.container img{
+    height: 200px;
+    width: 200px;
+    border-radius: 100px;
+}
+.container p {
+    width: 10rem;
+    line-height: 100px;
+    font-weight: bold;
+}
+.container .date {
+    width: 20rem;
+    line-height: 100px;
+    font-family: 'Times New Roman', Times, serif;
+}
+.container .completed td {
+    background-color: rgb(35, 136, 182);
+}
+.container button {
+    width: 10rem;
+}
