@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ocean View Villa Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="/csc309-project/P1/css/style2.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  </head>
+  <body class=""page-container>
+    <header class="header">
+        <nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="#">
+              <img src="logo.png" alt="Restify Logo">
+            </a>
+          </div>
+          <div class="navbar-menu">
+            <div class="navbar-start"></div>
+            <div class="navbar-end">
+              <a class="navbar-item is-3 is-bold" href="#">Home</a>
+              <a class="navbar-item is-3 is-bold" href="/csc309-project/P1/htmls/Properties/PropertyInfo.html">About My Properties</a>
+              <div class="navbar-item">
+              <ul>
+                <li>
+                  <select>
+                    <option>
+                      Albert Huang
+                    </option>
+                    <option>
+                      Log out
+                    </option>
+                    <option>
+                      <a href="#">I have a property to rent</a>
+                    </option>
+                    <option>
+                      help me
+                    </option>
+                  </select>
+                </li>
+             </ul>
+            </div>
+            </div>
+          </div>
+        </nav>
+    </header>
+    <section class="section">
+      <div class="container">
+        <h1 class="title has-text-centered is-1" style="font-family: cursive;">Mountain Retreat</h1>
+        <!-- Image Upload Section -->
+          <div class="images-grid">
+            <!-- images will be displayed here -->
+            <img src="mountain_view.jpg" alt="Image 1">
+            <img src="images/mountain1.jpg" alt="Image 2">
+            <img src="images/mountain2.jpg" alt="Image 3">
+            <img src="images/mountain3.jpg" alt="Image 4">
+            <img src="images/mountain4.jpg" alt="Image 5">
+            <img src="images/mountain5.jpg" alt="Image 6">
+          </div>
+        </div>
+        <form style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+          <div class="field">
+            <label class="label">Property Name</label>
+            <div class="control">
+              <input class="input" type="text" placeholder="Property Name">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Location</label>
+            <div class="control">
+              <input class="input" type="text" placeholder="Location">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Date Range</label>
+            <div class="control">
+              <input class="input" type="text" id="date-range-input" placeholder="Choose Date">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Price</label>
+            <div class="control">
+              <input class="input" type="text" placeholder="Price">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Amenities</label>
+            <div class="control">
+              <div class="select">
+                <select>
+                  <option>Swimming Pool</option>
+                  <option>Sauna</option>
+                  <option>Gym</option>
+                  <option>Outdoor Picnic Table</option>
+                  <option>Basketball Court</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-link">Submit</button>
+            </div>
+            <div class="control">
+                <button class="button is-text"><a href="/csc309-project/P1/htmls/Properties/PropertyInfo.html">Cancel</button></a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </body>
+  <script>
+    flatpickr("#date-range-input", {
+      mode: "range"
+    });
+  </script>
+</html>
