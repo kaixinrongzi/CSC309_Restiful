@@ -92,6 +92,7 @@ class Reservation(models.Model):
     end_date = models.DateField()
     state = models.CharField(choices=STATUS, max_length=100, default='P')
     guests = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
         ordering = ['-start_date']
