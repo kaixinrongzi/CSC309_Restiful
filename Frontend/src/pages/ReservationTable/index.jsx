@@ -23,7 +23,7 @@ const Table = ({reservations}) => {
                         <td>{reservation.hotel}</td>
                         <td>
                             {reservation.state !== 'F'
-                                ? <Link to="/reservations/${reservation.id}/">Change status</Link>
+                                ? <Link to="/reservation/${reservation.id}/approve/">Change status</Link>
                                 : <></>
                             }
                         </td>

@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import Table from '../ReservationTable'
 import axios from 'axios';
+import {useDispatch, useSelector} from 'react-redux'
 
 const Reservations = () => {
     const [reservations, setReservations] = useState([])
     const [query, setQuery] = useState({user_type: "", state: "", page: 1})
     const [totalPages, setTotalPages] = useState(1)
 
-    const token = localStorage.getItem('token');
+    const token = useSelector(state=>state.token.token)
     useEffect(() => {
         const {user_type, state, page} = query;
         // fetch from reservation list
@@ -16,8 +17,8 @@ const Reservations = () => {
         )
         .then(response => response.json)
         .then(json => {
-            setReservations(json.data);
-            setTotalPages(json.meta.total_pages);
+            setReservations(json.results);
+            setTotalPages(Math.max(Math.ceil(json.count / 2), 1));
         }, [query])
     })
 
