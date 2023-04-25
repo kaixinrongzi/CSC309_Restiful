@@ -13,20 +13,22 @@ class ReservationList(generics.ListCreateAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     pagination_class = PageNumberPagination
-
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        queryset = Reservation.objects.all()
         user_type = self.request.query_params.get('user_type')
+
         if user_type:
             if user_type == 'host':
                 # queryset = queryset.filter(user__is_host=True)
-                queryset = queryset.filter(hotel__owner=self.request.user)
+                queryset = self.queryset.filter(hotel__owner=self.request.user)
             elif user_type == 'guest':
-                queryset = queryset.filter(guest=self.request.user)
+                queryset = self.queryset.filter(guest=self.request.user)
         state = self.request.query_params.get('state')
         if state:
-            queryset = queryset.filter(state=state)
+            queryset = self.queryset.filter(state=state)
+        print(queryset)
         return queryset
 
 
@@ -36,6 +38,7 @@ class ReservationReserve(generics.CreateAPIView):
     serializer_class = ReservationSerializer
 
     def create(self, request, *args, **kwargs):
+        print('start create')
         hotel_id = request.data.get('hotel')
         hotel = get_object_or_404(Hotel, id=hotel_id)
 
@@ -50,7 +53,7 @@ class ReservationReserve(generics.CreateAPIView):
         serializer.save()
 
         Notification.objects.create(sender=self.request.user, receiver=hotel.owner,
-                                    detail='Someone reserve you property')
+                                    message='Someone reserve you property')
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     # def post(self, request, *args, **kwargs):
@@ -79,7 +82,7 @@ class ReservationApprove(generics.RetrieveAPIView, generics.UpdateAPIView):
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to approve the reservation')
         Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    detail='Your reservation is approved.')
+                                    message='Your reservation is approved.')
         # reservation.state = 'A'
         print(reservation)
         serializer.save(state='A')
@@ -109,7 +112,7 @@ class ReservationDeny(generics.UpdateAPIView):
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to deny the reservation')
         Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    detail='Your reservation is denied.')
+                                    message='Your reservation is denied.')
         # reservation.deny()
         # reservation.state = 'D'
         print(reservation)
@@ -136,7 +139,7 @@ class ReservationRequestCancel(generics.UpdateAPIView):
         if reservation.guest != self.request.user:
             return PermissionDenied('You do not have permission to cancel the reservation')
         Notification.objects.create(sender=self.request.user, receiver=reservation.hotel.owner,
-                                    detail='Someone cancel reservation.')
+                                    message='Someone cancel reservation.')
         reservation.request_cancel()
         print(reservation)
         serializer.save(state='P')
@@ -165,7 +168,7 @@ class ReservationApproveCancel(generics.UpdateAPIView):
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to approve the cancel')
         Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    detail='Your request to cancel the reservation is approved.')
+                                    message='Your request to cancel the reservation is approved.')
         reservation.approve_cancel()
         print(reservation)
         serializer.save(state='Ca')
@@ -184,7 +187,7 @@ class ReservationDenyCancel(generics.UpdateAPIView):
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to deny the cancel')
         Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    detail='Your request to cancel is denied.')
+                                    message='Your request to cancel is denied.')
         reservation.deny_cancel()
         print(reservation)
         serializer.save(state='A')
@@ -203,7 +206,7 @@ class ReservationTerminate(generics.UpdateAPIView):
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to terminate the reservation')
         Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    detail='Your reservation is approved.')
+                                    message='Your reservation is approved.')
         reservation.terminate()
         print(reservation)
         serializer.save(state='T')

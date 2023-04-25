@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -21,7 +23,8 @@ class Comment(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
     rating = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     detail = models.CharField(max_length=1000)
-    author = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True, blank=True)
+    author = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='author')
+    receiver = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='receiver')
 
     def __str__(self):
         return f"{self.detail}"
@@ -92,13 +95,12 @@ class Reservation(models.Model):
     end_date = models.DateField()
     state = models.CharField(choices=STATUS, max_length=100, default='P')
     guests = models.PositiveIntegerField(default=1)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
         ordering = ['-start_date']
 
-    def __str__(self):
-        return f"reservation {self.state} from {self.start_date} to {self.end_date} by {self.guest.username}"
+    # def __str__(self):
+    #     return f"reservation {self.state} from {self.start_date} to {self.end_date} by {self.guest.username}"
 
     @property
     def is_host(self):
@@ -174,16 +176,24 @@ class Reservation(models.Model):
 
 
 class Notification(models.Model):
+
     receiver = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
-    date = models.DateTimeField(null=True, blank=True)
+    date = models.DateTimeField(null=True, blank=True, default=timezone.now)
     message = models.TextField()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, default=11)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    sender = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True, blank=True, related_name='sender')
 
     def get_map(self):
         return {"receiver": self.receiver,
                 "read": self.read,
                 "date": self.date,
-                "message": self.message}
+                "message": self.message,
+                "content_type": self.content_type,
+                "object_id": self.object_id,
+                "sender": self.sender,
+                }
 
 
 class Reply(models.Model):
