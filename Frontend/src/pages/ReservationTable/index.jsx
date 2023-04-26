@@ -1,6 +1,8 @@
-import { Link } from 'react-router-dom';
+const Table = (props) => {
 
-const Table = ({reservations}) => {
+    
+    const reservations = props.reservations
+
     return <table>
         <thead>
             <th>Start Date</th>
@@ -22,9 +24,39 @@ const Table = ({reservations}) => {
                         <td>{reservation.guest}</td>
                         <td>{reservation.hotel}</td>
                         <td>
-                            {reservation.state !== 'F'
-                                ? <Link to="/reservation/${reservation.id}/approve/">Change status</Link>
-                                : <></>
+                            if (reservation.state === 'P') {
+                                <p>
+                                    <button onClick={() => {
+                                        alert("You will approve the reservation")
+                                        props.change(reservation.id, 'A')
+                                    }}>Approve</button>
+                                    <button onClick={() => {
+                                        alert("you want to deny the reservation")
+                                        props.change(reservation.id, 'D')
+                                    }}>Deny</button>
+                                </p>
+                            }
+                            else if (reservation.state === 'PC') {
+                                <p>
+                                    <button onClick={() => {
+                                        alert("You want to approve the cancellation")
+                                        props.change(reservation.id, 'Ca')
+                                    }}>Approve Cancel</button>
+                                    <button onClick={() => {
+                                        alert("You want to deny the cancellation")
+                                        props.change(reservation.id, 'A')
+                                    }}>Deny Cancel</button>
+                                </p>
+                            } else if (reservation.state === 'A') {
+                                <p>
+                                    <button onClick={() => {
+                                        alert("You want to terminate the reservation.")
+                                        props.change(reservation.id, 'T')
+                                    }}>Terminate</button>
+                                </p>
+                            }
+                            else {
+                                <></>
                             }
                         </td>
                     </tr>

@@ -30,7 +30,7 @@ const Reservation = (hotel_id, price) => {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`
+            'Authorization': "Bearer" + token
         },
         body: JSON.stringify({
             hotel: hotel_id,

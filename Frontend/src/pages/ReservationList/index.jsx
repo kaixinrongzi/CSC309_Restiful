@@ -2,24 +2,42 @@ import { useState, useEffect } from 'react';
 import Table from '../ReservationTable'
 import axios from 'axios';
 import {useDispatch, useSelector} from 'react-redux'
+import TableGuest from '../ReservationTableGuest';
 
 const Reservations = () => {
     const [reservations, setReservations] = useState([])
-    const [query, setQuery] = useState({user_type: "", state: "", page: 1})
+    const [query, setQuery] = useState({user_type: "host", state: "", page: 1})
     const [totalPages, setTotalPages] = useState(1)
 
-    const token = useSelector(state=>state.token.token)
+    const token = localStorage.getItem('token')
+
+    const change = (reservation_id, state) => {
+        setReservations(reservations.map(reservation => {
+            if (reservation.id === reservation_id) {
+                reservation.state = state;
+            }
+            return reservation;
+        }))
+    }
+
     useEffect(() => {
-        const {user_type, state, page} = query;
+        const {state, page} = query;
         // fetch from reservation list
         axios.get(`http://localhost:8000/hotels/reservation/list/?user_type=${user_type}&state=${state}&page=${page}`, 
                 {headers: {'Authorization': 'Bearer' + token}}
         )
-        .then(response => response.json)
+        .then(response => {
+                            if (response.ok) {
+                                return response.json()
+                            } else {
+                                throw Error("Get error when fetching data")
+                            }
+                        })
         .then(json => {
             setReservations(json.results);
             setTotalPages(Math.max(Math.ceil(json.count / 2), 1));
         }, [query])
+        .catch(error => console.log(error))
     })
 
     return <>
@@ -34,6 +52,7 @@ const Reservations = () => {
             </select>
         </label>
     </p>
+    {/* <Link to='/reservations/guest'>Guest mode</Link> */}
     <p>
         <label>Choose state:
         <select id="state" 
@@ -49,7 +68,9 @@ const Reservations = () => {
         </select>
     </label>
     </p>
-    <Table reservations={reservations}/>
+    {(user_type === 'host')
+      ? <Table reservations={reservations} change={change}/>
+      : <TableGuest reservations={reservations} change={change}/>}
     <p>
         {query.page > 1
             ? <button onClick={() => setQuery({...query, page: query.page - 1})}>Previous</button>
@@ -61,7 +82,6 @@ const Reservations = () => {
         }
     </p>
     <p>Page {query.page} out of {totalPages}</p>
-    
     </>
 }
 export default Reservations

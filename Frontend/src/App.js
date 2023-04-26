@@ -12,6 +12,7 @@ import './css/bulma/bulma-rtl.min.css'
 import Register from './Register.js'
 import LogIn from './login.js'
 import React, {Suspense} from 'react';
+import Reservations from './pages/ReservationList';
 //import { BrowserRouter, NavLink, redirect, Routes, Route, useRoutes} from "react-router-dom";
 
 function App() {
