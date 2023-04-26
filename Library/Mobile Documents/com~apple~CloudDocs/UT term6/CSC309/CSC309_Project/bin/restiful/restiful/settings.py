@@ -145,7 +145,15 @@ REST_FRAMEWORK = {
     'TOKEN_EXPIRED_AFTER_MINUTES': 300,
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 100,
+    'PAGE_SIZE': 5,
+}
+
+# simplejwt settings
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
+    'ROTATE_REFRESH_TOKENS': True,
 }
 
 DEFAULT_FROM_EMAIL = 'kaixinrongzi@126.com'
