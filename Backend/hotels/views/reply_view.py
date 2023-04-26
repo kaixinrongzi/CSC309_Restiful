@@ -30,8 +30,18 @@ class ReplyAdd(CreateAPIView):
         else:
             detail = reply['detail']
 
-        ordinary_dict = {'reply_to': reply['reply_to'],
-                         'object_id': reply['object_id'],
+        if 'reply_to' not in reply:
+            reply_to = ''
+        else:
+            reply_to = reply['reply_to']
+
+        if 'object_id' not in reply:
+            object_id = ''
+        else:
+            object_id = reply['object_id']
+
+        ordinary_dict = {'reply_to': reply_to,
+                         'object_id': object_id,
                          'author': author.id,
                          'detail': detail}
 
@@ -42,13 +52,13 @@ class ReplyAdd(CreateAPIView):
         reply_obj.save()
 
         #find out who it is replying to
-        if reply['reply_to'] == '11' or reply['reply_to'] == 11:    # reply to a comment
+        if reply_to == '11' or reply_to == 11:    # reply to a comment
             try:
                 comment = Comment.objects.get(id=reply['object_id'])
                 receiver = comment.author
             except:
                 return Response({"error": "The comment you are replying to does not exist"}, status=status.HTTP_403_FORBIDDEN)
-        if reply['reply_to'] == '12' or reply['reply_to'] == 12:    # reply to a comment
+        if reply_to == '12' or reply_to == 12:    # reply to a reply
             try:
                 reply = Reply.objects.get(id=reply['object_id'])
                 receiver = reply.author
@@ -61,4 +71,3 @@ class ReplyAdd(CreateAPIView):
         receiver.get_notified()
 
         return Response({"sucess", "replied"}, status=status.HTTP_201_CREATED)
-

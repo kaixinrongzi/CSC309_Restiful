@@ -142,7 +142,7 @@ class ReservationRequestCancel(generics.UpdateAPIView):
                                     message='Someone cancel reservation.')
         reservation.request_cancel()
         print(reservation)
-        serializer.save(state='P')
+        serializer.save(state='PC')
 
     # def put(self, request, pk):
     #     reservation = get_object_or_404(Reservation, pk=pk)
@@ -206,7 +206,7 @@ class ReservationTerminate(generics.UpdateAPIView):
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to terminate the reservation')
         Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    message='Your reservation is approved.')
+                                    message='Your reservation is Terminated.')
         reservation.terminate()
         print(reservation)
         serializer.save(state='T')
