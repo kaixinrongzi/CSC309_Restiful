@@ -7,13 +7,17 @@ from rest_framework import serializers
 class HotelSerializer(ModelSerializer):
     class Meta:
         model = Hotel
-        fields = ['id', 'name', 'address', 'description', 'capacity', 'beds', 'baths', 'rating']
+        fields = ['id', 'name', 'address', 'description', 'capacity', 'beds', 'baths', 'rating', 'owner']
 
 
 class HotelAvailabilitySerializer(ModelSerializer):
+    beds = IntegerField(read_only=True, source='hotel.beds')
+    baths = IntegerField(read_only=True, source='hotel.baths')
+
     class Meta:
         model = HotelAvailability
-        fields = ['id', 'hotel', 'start_date', 'end_date', 'price']
+        # fields = '__all__'
+        fields = ['id', 'hotel', 'start_date', 'end_date', 'price', 'beds', 'baths']
 
 
 class CommentSerializer(ModelSerializer):

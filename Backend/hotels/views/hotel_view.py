@@ -6,17 +6,15 @@ from ..serializers import HotelSerializer, HotelAvailabilitySerializer
 from ..models import Hotel, HotelAvailability
 from rest_framework.filters import OrderingFilter
 from rest_framework.pagination import PageNumberPagination
-
-
 # Create your views here.
 # from django.contrib.auth.models import User as MyUser
+
 class AddHotel(CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = HotelSerializer
-
+    
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
+        serializer.save(owner = self.request.user)
 
 class AddAvailability(CreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -40,10 +38,9 @@ class AddAvailability(CreateAPIView):
 
     #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-
 # class deleteavailability
 
-# view hotel detail and update.
+# view hotel detail and update. 
 class UpdateHotel(RetrieveAPIView, UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = HotelSerializer
@@ -82,7 +79,6 @@ class UpdateAvailability(RetrieveAPIView, UpdateAPIView):
         # availability_serializer.is_valid(raise_exception=True)
         serializer.save()
 
-
 class SearchHotelAvailability(ListAPIView):
     serializer_class = HotelAvailabilitySerializer
 
@@ -95,12 +91,11 @@ class SearchHotelAvailability(ListAPIView):
         obj = HotelAvailability.objects.all().first()
         if start and end:
             query = query.filter(start_date__lte=start)
-            query = query.filter(end_date__gte=end)
-            # print(query.values('hotel__id'))
+            query = query.filter(end_date__gte=end)  
+        # print(query.values('hotel__id'))
         return query
         # return query.values('hotel__id', 'hotel__name', 'hotel__address', 'hotel__description', 'hotel__rating', 'hotel__capacity', 'hotel__beds', 'hotel__baths').distinct()
         # return query.values_list('hotel')
-
 
 # filter and order
 class SearchHotel(ListAPIView):
@@ -121,7 +116,7 @@ class SearchHotel(ListAPIView):
         baths = self.request.query_params.get('baths', None)
 
         order_by = self.request.query_params.get('ordering', None)
-
+        
         if address:
             query = query.filter(address__icontains=address)
         if capacity:
@@ -149,12 +144,3 @@ class DeleteHotel(DestroyAPIView):
     def get_object(self):
         hotel = get_object_or_404(Hotel.objects.all(), pk=self.kwargs['pk'])
         return hotel
-
-
-class ViewHotel(ListAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = HotelSerializer
-
-    def get_queryset(self):
-        hotels = Hotel.objects.filter(owner=self.request.user)
-        return hotels
