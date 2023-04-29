@@ -18,6 +18,7 @@ export default function Profile(){
     console.log('profile lalala')
     const location = useLocation()
     console.log('location: ', location)
+    const token = localStorage.getItem('token')
 
     const [first, setFirst] = useState(false)
     const [username, setUsername] = useState('')
@@ -27,7 +28,7 @@ export default function Profile(){
     const [rating, setRating] = useState(5)
     const [hotels, setHotels] = useState([])
     const [count, setCount] = useState(0)
-    const [token, setToken] = useState('')
+//    const [token, setToken] = useState('')
 
     console.log('token1: ', token)
     console.log('count:' ,count)
@@ -53,12 +54,12 @@ export default function Profile(){
 
     if(count === 0){
         setCount(1)
-        setToken(location.state.token)
+//        setToken(location.state.token)
         console.log('token2: ', token)
         axios
        .get('http://localhost:8000/accounts/profile/view/',
             {
-                headers: {"Authorization": 'Bearer '+location.state.token}
+                headers: {"Authorization": 'Bearer '+token}
              }
              )
             .then(response => {
@@ -83,7 +84,7 @@ export default function Profile(){
           axios
          .get('http://localhost:8000/hotels/view/',
             {
-               headers: {"Authorization": 'Bearer '+location.state.token}
+               headers: {"Authorization": 'Bearer '+token}
             }
             )
             .then(response=>{
@@ -112,7 +113,7 @@ export default function Profile(){
             email: new_email
         },
         {headers: {
-            'Authorization': 'Bearer '+location.state.token
+            'Authorization': 'Bearer '+token
         }}).then(response=>{
             console.log('117', response.data)
 
@@ -152,7 +153,7 @@ export default function Profile(){
                 axios
                  .get('http://localhost:8000/hotels/view/',
                     {
-                       headers: {"Authorization": 'Bearer '+location.state.token}
+                       headers: {"Authorization": 'Bearer '+token}
                     }
                     )
                     .then(response=>{
@@ -192,47 +193,17 @@ export default function Profile(){
       <div className="aboutMe">
         <p>About Me</p>
         <div className="personalInfo">
-            <div className="portrait"></div>
-            <ul className="info">
-                <li><label for='username'>User Name: </label></li><input id='username' placeholder={username}/>
-                <li><label for='pwd'>Password: </label></li><input id='pwd' placeholder={password}/>
-                <li><label for='phone'>Phone: </label></li><input id='phone' placeholder={phone}/>
-                <li><label for='email'>Email: </label></li><input id='email' placeholder={email}/>
-                <li><label for='rating'>Rating: </label></li><input id='rating' placeholder={rating}/>
-                <li><button onClick={updateProfileHandler}>Update Profile</button></li>
-            </ul>
+            <div className="portrait">
+                <ul className="info">
+                    <li><label for='username'>User Name: </label></li><input id='username' placeholder={username}/>
+                    <li><label for='pwd'>Password: </label></li><input id='pwd' placeholder={password}/>
+                    <li><label for='phone'>Phone: </label></li><input id='phone' placeholder={phone}/>
+                    <li><label for='email'>Email: </label></li><input id='email' placeholder={email}/>
+                    <li><label for='rating'>Rating: </label></li><input id='rating' placeholder={rating}/>
+                    <li><button onClick={updateProfileHandler}>Update Profile</button></li>
+                </ul>
+            </div>
         </div>
-      </div>
-      <div className="myRenting">
-          <ul>
-              <li><span className="title">Where I booked</span></li>
-          </ul>
-          <div className="rentingInfo">
-          </div>
-      </div>
-      <div class="myProperty">
-            <ul>
-              <li><span className="title">My Properties</span></li>
-           </ul>
-      <div className="rentingInfo">
-            <ul>
-                {
-                  hotels.map((value, index)=>{
-                    const hotel_id = 'hotel_' + value.id
-//                    return <li key={index} id={hotel_id}><b>Name:</b> {value.name} - <b>Address:</b> {value.address} - <b>Rating:</b> {value.rating} <button onClick={updateHandler}>Edit</button></li>
-                      return <form key={index} id={hotel_id} action=''>
-                                <label for={hotel_id+'name'}>name: </label><input id={hotel_id+'name'} placeholder={value.name}/>
-                                <label for={hotel_id+'addr'}>address: </label><input id={hotel_id+'addr'} placeholder={value.address} />
-                                <label for={hotel_id+'cap'}>capacity: </label><input id={hotel_id+'cap'} placeholder={value.capacity} />
-                                <label for={hotel_id+'beds'}>beds: </label><input id={hotel_id+'beds'} placeholder={value.beds} />
-                                <label for={hotel_id+'baths'}>baths: </label><input id={hotel_id+'baths'}  placeholder={value.baths}/>
-                                <button onClick={updateHotelHandler}>update</button>
-                                <p className='hotel_update_err'></p>
-                            </form>
-                  })
-                }
-            </ul>
-      </div>
       </div>
     </main>
 
