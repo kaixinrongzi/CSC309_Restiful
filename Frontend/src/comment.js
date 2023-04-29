@@ -110,14 +110,15 @@ function CommentAdd(){
 
 
 function CommentView(){
-//    const location = useLocation()
+    const location = useLocation()
     const navigate = useNavigate()
 
 //    const token = location.state?location.state.token:''
 //    const token = useSelector(state=>state.token.token)
     const token = localStorage.getItem('token')
-//    const comment_id = location.state?location.state.comment_id:''
-    const comment_id = useSelector(state=>state.comment.comment_id)
+    const comment_id = location.state?location.state.comment_id:''
+    console.log('comment 120: ', comment_id)
+//    const comment_id = useSelector(state=>state.comment.comment_id)
 
     const [comment, setComment] = useState('')
     const [count, setCount] = useState(0)
@@ -125,13 +126,13 @@ function CommentView(){
     if(count===0){
         setCount(1)
         axios
-         .get('http://localhost:8000/hotels/comment/' + comment_id + '/view/',
+         .get('http://localhost:8000/hotels/commentforme/' + comment_id + '/view/',
             {
                headers: {"Authorization": 'Bearer '+ token}
             }
             ).then(response=>{
                 console.log(response.data)
-                setComment(response.data.results[0])
+                setComment(response.data)
          }).catch(error=>{
             console.log(error)
             if(error.response.status === 401){
@@ -154,6 +155,7 @@ function CommentView(){
     }
 
     const replyHandler=()=>{
+        console.log('comment 158: ', comment.id)
         navigate('/hotels/reply/add', {state: {object_id: comment.id, reply_to: 'comment'}, replace: false})
     }
 
