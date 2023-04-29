@@ -2,13 +2,13 @@ import axios from 'axios'
 import $ from 'jquery';
 import './css/comment.css'
 import {useLocation, useNavigate} from 'react-router-dom'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {getToken} from './store/tokenGetter'
 import {useDispatch, useSelector} from 'react-redux'
 import './css/userAccount.css'
 
 
-export default function ReplyAdd(){
+function ReplyAdd(){
 
 //    const token = useSelector(state=>state.token.token)
     const token = localStorage.getItem('token')
@@ -18,7 +18,7 @@ export default function ReplyAdd(){
 
     const replyHandler=(e)=>{
 
-        const detail = $(e.target.closest('div')).find('#object_id').val()
+        const detail = $(e.target.closest('div')).find('#detail').val()
 
         const reply_to_type = reply_to==='comment'?11:12
 
@@ -41,6 +41,9 @@ export default function ReplyAdd(){
             $('.reply_info').html(reply_info)
         }).catch(error=>{
             console.log(error.response)
+            if(error.response.status===401){
+                $('.reply_info').html(error.response.status + ' ' + error.response.statusText)
+            }
         })
 
     }
@@ -57,6 +60,37 @@ export default function ReplyAdd(){
         </div>
         </main>
 
+}
+
+
+function ReplyView(){
+    const navigate = useNavigate()
+    const token = localStorage.getItem('token')
+    const location = useLocation()
+    const reply_id = location.state?location.state.reply_id:''
+
+    const [reply, setReply] = useState('')
+
+    useEffect(()=>{
+        axios
+        .get('http://localhost:8000/hotels/reply/' + reply_id + '/view/',
+            {headers: {"Authorization": 'Bearer '+ token}}
+        ).then(response=>{
+            console.log(response)
+            setReply(response.data)
+        }).catch(error=>{
+            console.log(error)
+        })
+
+    }, [navigate])
+
+    return <main>
+            <div className='replyview'>
+                <p><b>from user_id:</b> { reply.author} <b>detail:</b> { reply.detail }</p>
+            </div>
+        </main>
 
 
 }
+
+export {ReplyAdd, ReplyView}
