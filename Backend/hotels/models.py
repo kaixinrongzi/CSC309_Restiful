@@ -1,4 +1,4 @@
-from django.utils import timezone
+from datetime import datetime
 
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -87,7 +87,6 @@ class Reservation(models.Model):
         ('E', 'Expired'),
         ('T', 'Terminated'),
         ('F', 'Finished'),
-        ('PC', 'PendingCancel')
     ]
 
     guest = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True, blank=True)
@@ -100,8 +99,8 @@ class Reservation(models.Model):
     class Meta:
         ordering = ['-start_date']
 
-    # def __str__(self):
-    #     return f"reservation {self.state} from {self.start_date} to {self.end_date} by {self.guest.username}"
+    def __str__(self):
+        return f"reservation {self.state} from {self.start_date} to {self.end_date} by {self.guest.username}"
 
     @property
     def is_host(self):
@@ -128,9 +127,6 @@ class Reservation(models.Model):
     def is_cancelled(self):
         return self.state == 'C'
 
-    def is_pendingCancel(self):
-        return self.state == 'PC'
-
     # @is_guest
     def reserve(self):
         self.state = 'P';
@@ -140,16 +136,16 @@ class Reservation(models.Model):
     def request_cancel(self):
         if self.is_approved:
             print('change to P')
-            self.state = 'PC'
+            self.state = 'P'
         self.save()
 
     def approve_cancel(self):
-        if self.is_pendingCancel:
+        if self.is_pending:
             self.state = 'Ca'
         self.save()
 
     def deny_cancel(self):
-        if self.is_pendingCancel:
+        if self.is_pending:
             print('Deny cancel')
             self.state = 'A'
         self.save()
@@ -180,31 +176,25 @@ class Reservation(models.Model):
 
 
 class Notification(models.Model):
-
     receiver = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
-    date = models.DateTimeField(null=True, blank=True, default=timezone.now)
+    date = models.DateTimeField(default=datetime.now())
     message = models.TextField()
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, default=11)
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    sender = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True, blank=True, related_name='sender')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
 
     def get_map(self):
         return {"receiver": self.receiver,
                 "read": self.read,
                 "date": self.date,
-                "message": self.message,
-                "content_type": self.content_type,
-                "object_id": self.object_id,
-                "sender": self.sender,
-                }
+                "message": self.message}
 
 
 class Reply(models.Model):
     reply_to = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     author = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True)
-    detail = models.TextField(max_length=200, null=True,  blank=True)
+    detail = models.TextField(max_length=200, default='I have got your reply. Thank you!')
 
 
 
