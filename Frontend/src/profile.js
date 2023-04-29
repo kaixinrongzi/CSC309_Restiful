@@ -1,6 +1,4 @@
 import React, {useState, useEffect} from 'react'
-//import './css/style1.css'
-//import './css/style2.css'
 import './css/index.css'
 import './css/bulma/bulma.css'
 import './css/bulma/bulma.css.map'
@@ -39,17 +37,6 @@ export default function Profile(){
         console.log('username change to: ', username)
 
     }, [username])
-
-//     axios
-//         .get('http://localhost:8000/hotels/view/',
-//            {
-//               headers: {"Authorization": 'Bearer '+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgyMDUwNDc0LCJpYXQiOjE2ODIwNTAxNzQsImp0aSI6IjM5NTFjZDhmZGU2MDRlZWQ5NzM2ZjBhZWI5YWQyYTIwIiwidXNlcl9pZCI6MTd9.OJyk7Bhb3I-pBDuWSzxOSSrJQAp3pYuILqsy6KsHiAk"}
-//            })
-//            .then(response=>{
-//                console.log('get hotels')
-////              setHotels(response.data.results.slice())
-//                console.log('hotels: ',hotels)
-//           })
 
     if(count === 0){
         setCount(1)
@@ -219,7 +206,6 @@ export default function Profile(){
                 {
                   hotels.map((value, index)=>{
                     const hotel_id = 'hotel_' + value.id
-//                    return <li key={index} id={hotel_id}><b>Name:</b> {value.name} - <b>Address:</b> {value.address} - <b>Rating:</b> {value.rating} <button onClick={updateHandler}>Edit</button></li>
                       return <form key={index} id={hotel_id} action=''>
                                 <label for={hotel_id+'name'}>name: </label><input id={hotel_id+'name'} placeholder={value.name}/>
                                 <label for={hotel_id+'addr'}>address: </label><input id={hotel_id+'addr'} placeholder={value.address} />

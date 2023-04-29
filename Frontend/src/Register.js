@@ -39,11 +39,6 @@ export default function Register(){
             .then(response => {
                 console.log(response.data);
 
-//                $('#username_error').html('')
-//                $('#pwd_error').html('')
-//                $('#phone_error').html('')
-//                $('#email_error').html('')
-
                 alert("You Registered Successfully!")
                 setIsRegistered(true)
 
@@ -58,11 +53,6 @@ export default function Register(){
                     const pwd_error_info = 'password' in error.response.data? 'password: ' + error.response.data.password : ''
                     const phone_error_info = 'phone_number' in error.response.data? 'phone_number: ' + error.response.data.phone_number : ''
                     const email_error_info = 'email' in error.response.data? 'email: ' + error.response.data.email : ''
-
-//                    $('#username_error').html(username_error_info)
-//                    $('#pwd_error').html(pwd_error_info)
-//                    $('#phone_error').html(phone_error_info)
-//                    $('#email_error').html(email_error_info)
 
                     setUsernameError(username_error_info)
                     setPwdError(pwd_error_info)

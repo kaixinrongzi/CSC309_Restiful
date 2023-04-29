@@ -30,7 +30,6 @@ function App() {
              <li>
                 <details>
                     <summary>earth</summary>
-
                         <ul class="submenu">
                          <li>
                                <a href='/register'>Sign Up</a>
@@ -38,11 +37,10 @@ function App() {
                          <li>
                               <a href='/login'>Sign In</a>
                          </li>
-                         <li><a href="I have a property to post">Post Your Property</a></li>
+                         <li><a href="/register-property/">Post Your Property</a></li>
                          <li><a href="./users/contact.html">Contact Us</a></li>
                         </ul>
                 </details>
-
              </li>
           </ul>
         </header>

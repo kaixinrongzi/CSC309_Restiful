@@ -12,9 +12,6 @@ import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 import React, {useState} from 'react'
 
-
-
-
 export default function LogIn(){
 
     const [isLogin, setIsLogin] = useState(false)
@@ -37,10 +34,6 @@ export default function LogIn(){
                 username: myForm.find('#username').val(),
                 password: myForm.find('#password').val(),
             }
-
-//            ,{
-//                headers: {"Authorization": 'Bearer '+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgyMDQ2MTc5LCJpYXQiOjE2ODIwNDU4NzksImp0aSI6IjI3NmZiMGZmNDA2ZTQzODA5ZDg2NzQxMzQyNzg1OWNlIiwidXNlcl9pZCI6MTd9._jgPlwjsSqEeN_9zco1S_MxQvPlSwxbzPR7x2FUzWWU"}
-//             }
              )
             .then(response => {
                 console.log(response.data);

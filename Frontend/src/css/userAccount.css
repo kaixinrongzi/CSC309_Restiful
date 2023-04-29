@@ -188,3 +188,28 @@ body .userAccount{
 .userAccount div.myProperty div.rentingInfo p:hover{
     text-decoration: underline
 }
+
+/* userAccount.css */
+
+.property-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .property-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-right: 1rem;
+    border-radius: 8px;
+  }
+  
+  .property-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
