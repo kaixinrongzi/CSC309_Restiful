@@ -1,12 +1,13 @@
 from django.shortcuts import render
-from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, DestroyAPIView, get_object_or_404
+from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, DestroyAPIView, get_object_or_404, \
+    RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import QueryDict
-from django.contrib.contenttypes.models import ContentType
 from rest_framework.pagination import PageNumberPagination
-from ..serializers import CommentSerializer, CommentAddSerializer
+from django.contrib.contenttypes.models import ContentType
+from ..serializers import CommentSerializer, CommentAddSerializer, NotificationSerializer
 from ..models import Comment, Notification, Hotel, Reservation
 import sys
 
@@ -27,6 +28,7 @@ class AddComment(CreateAPIView):
         return Response(user.get_map(), status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
+        print(request.data)
         # regular operation
         comment = request.data
         user = request.user
@@ -42,9 +44,8 @@ class AddComment(CreateAPIView):
             # check if the user has ever finished living in the hotel
             try:
                 reservation = Reservation.objects.get(guest=user, hotel=hotel, state='F')
-            except(Reservation.DoesNotExist):
-                return Response({"error": "the user has not finished the living in the hotel"},
-                                status=status.HTTP_403_FORBIDDEN)
+            except:
+                return Response({"error": "the user has not finished the living in the hotel"}, status=status.HTTP_403_FORBIDDEN)
 
             # find out the property owner
             hotel_owner = hotel.owner
@@ -54,21 +55,39 @@ class AddComment(CreateAPIView):
                 author = comment['author']
             else:
                 author = request.user.id
+            if 'content_type' in comment and comment['content_type'] != '':
+                content_type = comment['content_type']
+            else:
+                content_type = ''
+            if 'object_id' in comment and comment['object_id'] != '':
+                object_id = comment['object_id']
+            else:
+                object_id=''
+            if 'rating' in comment and comment['rating'] != '':
+                rating = comment['rating']
+            else:
+                rating=''
+            if 'detail' in comment and comment['detail'] != '':
+                detail = comment['detail']
+            else:
+                detail = ''
 
             # check if I have commented on this hotel?
-            my_comments = Comment.objects.filter(author=request.user, content_type=7)
-            for my_comment in my_comments:
-                if int(my_comment.object_id) == int(hotel_id):
-                    return Response(
-                        {"error", "you have commented on this property with comment_id: " + str(my_comment.id)},
-                        status=status.HTTP_403_FORBIDDEN)
+            try:
+                my_comment = get_object_or_404(Comment, author=request.user, content_type=7, object_id=hotel_id)
+                print(my_comment)
+                return Response(
+                    {"error", "you have commented on this property with comment_id: " + str(my_comment.id)},
+                    status=status.HTTP_403_FORBIDDEN)
+            except:
+                print('no comment before')
 
             # create a comment
 
-            ordinary_dict = {'content_type': comment['content_type'],
-                             'object_id': comment['object_id'],
-                             'rating': comment['rating'],
-                             'detail': comment['detail'],
+            ordinary_dict = {'content_type': content_type,
+                             'object_id': object_id,
+                             'rating': rating,
+                             'detail': detail,
                              'author': author,
                              'receiver': hotel_owner.id}
 
@@ -76,23 +95,28 @@ class AddComment(CreateAPIView):
 
             serializer = self.get_serializer(data=ordinary_dict)
             serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
-            new_comment = serializer.save()
+            comment_obj = serializer.save()
+            print('98', comment_obj)
+            # self.perform_create(serializer)
 
             # create a notification
-            notif = Notification.objects.create(receiver=hotel_owner,
-                                                message="comment on your property: " + str(hotel_id),
-                                                content_type=ContentType.objects.get(model='comment'),
-                                                object_id=new_comment.id
-                                                )
+            notif_data={'receiver' : hotel_owner.id,
+                        'message': "comment on your property: " + str(hotel_id),
+                        'content_type': 11,
+                        'object_id': comment_obj.id}
+
+            notif_serializer = NotificationSerializer(data=notif_data)
+            if notif_serializer.is_valid(raise_exception=True):
+                notif_serializer.save()
+
             hotel_owner.get_notified()
         elif content_type == '6' or content_type == 6:  # comment on an user
             user_id = comment['object_id']
             try:
                 commented_user = MyUser.objects.get(pk=user_id)
+                print(commented_user)
             except:
-                return Response({"error": "the user you are commenting does not exist"},
-                                status=status.HTTP_403_FORBIDDEN)
+                return Response({"error": "the user you are commenting does not exist"}, status=status.HTTP_403_FORBIDDEN)
 
             # create a comment
             if 'author' in comment and comment['author'] != '':
@@ -104,19 +128,25 @@ class AddComment(CreateAPIView):
                              'rating': comment['rating'],
                              'detail': comment['detail'],
                              'author': author,
-                             'receiver': user_id}
+                             'receiver': commented_user.id}
 
             QueryDict('', mutable=True).update(ordinary_dict)
 
             serializer = self.get_serializer(data=ordinary_dict)
             serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
-            new_comment = serializer.save()
+            comment_obj = serializer.save()
+            print('137', comment_obj.receiver)
 
             # create a notification
-            notif = Notification.objects.create(receiver=commented_user, message="comment on yourself: " + str(user_id),
-                                                content_type=ContentType.objects.get(model='comment'),
-                                                object_id=new_comment.id)
+            notif_data = {'receiver': commented_user.id,
+                          'message': "comment on you",
+                          'content_type': 11,
+                          'object_id': comment_obj.id}
+
+            notif_serializer = NotificationSerializer(data=notif_data)
+            if notif_serializer.is_valid(raise_exception=True):
+                notif_serializer.save()
+
             commented_user.get_notified()
         else:
             return Response({"error": "no choice for content_type"}, status=status.HTTP_403_FORBIDDEN)
@@ -133,7 +163,7 @@ class GetComments(ListAPIView):
     def get_queryset(self):
         user = self.request.user
         print(Comment.objects.filter(author=user))
-        return Comment.objects.filter(author=user) | Comment.objects.filter(receiver=user)
+        return Comment.objects.filter(author=user)
 
 
 class GetComment(ListAPIView):
@@ -141,24 +171,13 @@ class GetComment(ListAPIView):
     permission_class = [IsAuthenticated]
 
     def get_queryset(self):
-        comment_id = self.request.get_full_path().split('/')[-3]
-        print('138', comment_id)
+        comment_id = self.kwargs['pk']
+        print(comment_id)
 
-        # check if the comment_id written by/comment to the logined user
+        # check if the comment_id belongs to the logined user
         user = self.request.user
-        user_comments = Comment.objects.filter(author=user, pk=comment_id) | Comment.objects.filter(receiver=user,
-                                                                                                    pk=comment_id)
-        # for comment in user_comments:
-        #     if comment.id == comment_id:
-        #         return comment
-
-        # if user_comments:
-        #     return user_comments
-        # else:
-        #     Response({"error": "not allowed"}, status.HTTP_403_FORBIDDEN)
-        # return Response({"error": "not allowed"}, status.HTTP_403_FORBIDDEN)
+        user_comments = Comment.objects.filter(author=user.id)
         return user_comments
-
 
 # host reply to the public comment about his property.
 # class FollowComment1(CreateAPIView):
@@ -182,7 +201,7 @@ class DeleteComment(DestroyAPIView):
                             status=status.HTTP_403_FORBIDDEN)
         comment_to_delete.delete()
         return Response({"delete_sucess": "The comment has been deleted"},
-                        status=status.HTTP_200_OK)
+                            status=status.HTTP_200_OK)
 
 
 class GetCommentsforHotel(ListAPIView):
@@ -191,9 +210,23 @@ class GetCommentsforHotel(ListAPIView):
 
     def get_queryset(self):
         hotel_id = self.request.get_full_path().split('/')[-4]
-        print('138', hotel_id)
+        comments = Comment.objects.filter(content_type=ContentType.objects.get(model='hotel'), object_id=hotel_id)
+        return comments
 
-        # user = self.request.user
-        hotel_comments = Comment.objects.filter(content_type=ContentType.objects.get(model='hotel'), object_id=hotel_id)
 
-        return hotel_comments
+class GetCommentsforMyself(ListAPIView):
+    serializer_class = CommentSerializer
+    permission_class = [IsAuthenticated]
+
+    def get_queryset(self):
+        comments = Comment.objects.filter(receiver=self.request.user.id)
+        return comments
+
+
+class GetCommentforMyself(RetrieveAPIView):
+    serializer_class = CommentSerializer
+    permission_class = [IsAuthenticated]
+
+    def get_object(self):
+        comment = get_object_or_404(Comment, id=self.kwargs['pk'])
+        return comment
