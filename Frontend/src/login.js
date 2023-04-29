@@ -14,7 +14,6 @@ import React, {useState} from 'react'
 
 
 
-
 export default function LogIn(){
 
     const [isLogin, setIsLogin] = useState(false)
@@ -50,6 +49,7 @@ export default function LogIn(){
                     $('#pwd_error').html('')
 
                     setToken(response.data.access)
+                    localStorage.setItem('token', response.data.access)
 
                     alert("You Have Gotten Your token!")
 
@@ -60,8 +60,10 @@ export default function LogIn(){
                             username: myForm.find('#username').val(),
                             password: myForm.find('#password').val(),
                         },
-                        {headers: {'Authorization': 'Bearer '+token}}
-                        )
+                        {headers: {'Authorization': 'Bearer '+response.data.access}}
+                        ).then(response=>{
+                            localStorage.setItem('user_id', response.data.id)
+                        }).catch(error=>console.log(error))
 
                     setIsLogin(true);
 
@@ -98,7 +100,8 @@ export default function LogIn(){
 
            </div>
     }else{
-        navigate('/profile', { state: {token: token}, replace: false })
+        navigate('/accounts/profile', { state: {token: token}, replace: false })
     }
 
 }
+
