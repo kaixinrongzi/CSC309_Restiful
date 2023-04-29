@@ -72,9 +72,9 @@ function NotificationViewAll(){
 //                                            notification_id: notification.id,
 //                                            comment_id: notification.object_id,
 //                                             replace: false }})
-        dispatch(getNotificationId({notification_id: notification.id}))
-        dispatch(getCommentId({comment_id: notification.object_id}))
-        navigate('/hotels/notification/view')
+//        dispatch(getNotificationId({notification_id: notification.id}))
+//        dispatch(getCommentId({comment_id: notification.object_id}))
+        navigate('/hotels/notification/view', {state: {notif_id: notification.id}, replace: false})
 
     }
 
@@ -109,35 +109,44 @@ function NotificationViewAll(){
 }
 
 function NotificationView(){
-//    const location = useLocation()
+    const location = useLocation()
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    useSelector(state=>console.log('notification 77: ', state))
-//    const token = location.state?location.state.token:''
+//    useSelector(state=>console.log('notification 77: ', state))
+    const notification_id = location.state?location.state.notif_id:''
+    console.log('notification 118: ', notification_id)
 //    const token = useSelector(state=>state.token.token)
     const token = localStorage.getItem('token')
-    const notification_id = useSelector(state=>state.notification.notification_id)
+//    const notification_id = useSelector(state=>state.notification.notification_id)
 //    const notification_id = location.state?location.state.notification_id:''
-     const comment_id = useSelector(state=>state.comment.comment_id)
+//     const comment_id = useSelector(state=>state.comment.comment_id)
 //    const comment_id = location.state?location.state.comment_id:''
 
-    axios.
+    useEffect(()=>{
+        axios.
         get('http://localhost:8000/hotels/notifications/' + notification_id + '/view/',
             {
                headers: {"Authorization": 'Bearer '+ token}
             }
         ).then(response=>{
             console.log(response.data)
-//             navigate('/hotels/comment/view', { state:
-//                                            {token: token,
-//                                            comment_id:comment_id,
-//                                             replace: false }})
-            navigate('/hotels/comment/view')
+            const notif = response.data.results[0]
+            if (parseInt(notif.content_type)===11){
+                //notif is caused by a comment
+                navigate('/hotels/comment/view', {state: {comment_id: notif.object_id}, replace: false})
+            }else if(parseInt(notif.content_type)===8){
+                //notif is caused by a reservation
+                navigate('/', {state: {comment_id: notif.object_id}, replace: false})
+            }else if(parseInt(notif.content_type)===12){
+                //notif is caused by a reply
+                navigate('/hotels/reply/view', {state: {reply_id: notif.object_id}, replace: false})
+            }
 
         }).catch(error=>{
             console.log(error.response)
         })
+    }, [navigate])
 
 }
 
