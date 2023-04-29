@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from ..models import Reservation, Hotel, HotelAvailability, Notification
-from ..serializers import ReservationSerializer, UpdateReservationSerializer
+from ..serializers import ReservationSerializer, UpdateReservationSerializer, NotificationSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
@@ -13,12 +13,11 @@ class ReservationList(generics.ListCreateAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     pagination_class = PageNumberPagination
-    permission_classes = [IsAuthenticated]
+
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = Reservation.objects.all()
         user_type = self.request.query_params.get('user_type')
-
         if user_type:
             if user_type == 'host':
                 # queryset = queryset.filter(user__is_host=True)
@@ -28,7 +27,6 @@ class ReservationList(generics.ListCreateAPIView):
         state = self.request.query_params.get('state')
         if state:
             queryset = self.queryset.filter(state=state)
-        print(queryset)
         return queryset
 
 
@@ -38,7 +36,6 @@ class ReservationReserve(generics.CreateAPIView):
     serializer_class = ReservationSerializer
 
     def create(self, request, *args, **kwargs):
-        print('start create')
         hotel_id = request.data.get('hotel')
         hotel = get_object_or_404(Hotel, id=hotel_id)
 
@@ -50,11 +47,21 @@ class ReservationReserve(generics.CreateAPIView):
         # create and return the reservation object
         serializer = self.get_serializer(data=validated_data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        reservation_obj = serializer.save()
 
-        Notification.objects.create(sender=self.request.user, receiver=hotel.owner,
-                                    message='Someone reserve you property')
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # create a notification to the hotel owner
+        notif_data = {'sender': self.request.user,
+                      'receiver': hotel.owner,
+                      'detail': 'Someone reserve you property ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' +str(reservation_obj.end_date),
+                      'content_tye': 8,
+                      'object_id': reservation_obj.id}
+
+        notif_serializer = NotificationSerializer(data=notif_data)
+        if notif_serializer.is_valid(raise_exception=True):
+            notif_serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'notification fails to be created'}, status=status.HTTP_400_BAD_REQUEST)
 
     # def post(self, request, *args, **kwargs):
     #     serializer = self.get_serializer(data=request.data)
@@ -81,11 +88,24 @@ class ReservationApprove(generics.RetrieveAPIView, generics.UpdateAPIView):
         reservation = self.get_object()
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to approve the reservation')
-        Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    message='Your reservation is approved.')
+
         # reservation.state = 'A'
         print(reservation)
-        serializer.save(state='A')
+        reservation_obj = serializer.save(state='A')
+
+        # create a new notification to resident
+        notif_data = {'sender': self.request.user,
+                      'receiver': reservation_obj.guest.id,
+                      'detail': self.request.user.username + 'approved you reservation' + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
+                      'content_tye': 8,
+                      'object_id': reservation_obj.id}
+
+        notif_serializer = NotificationSerializer(data=notif_data)
+        if notif_serializer.is_valid(raise_exception=True):
+            notif_serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'notification fails to be created'}, status=status.HTTP_400_BAD_REQUEST)
 
     # def put(self, request, pk):
     #     user = self.request.user
@@ -111,12 +131,25 @@ class ReservationDeny(generics.UpdateAPIView):
         reservation = self.get_object()
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to deny the reservation')
-        Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    message='Your reservation is denied.')
+
         # reservation.deny()
         # reservation.state = 'D'
         print(reservation)
-        serializer.save(state='D')
+        reservation_obj = serializer.save(state='D')
+
+        # create a new notification to resident
+        notif_data = {'sender': self.request.user,
+                      'receiver': reservation_obj.guest.id,
+                      'detail': self.request.user.username + 'denied you reservation',
+                      'content_tye': 8,
+                      'object_id': reservation_obj.id}
+
+        notif_serializer = NotificationSerializer(data=notif_data)
+        if notif_serializer.is_valid(raise_exception=True):
+            notif_serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'notification fails to be created'}, status=status.HTTP_400_BAD_REQUEST)
 
     # def put(self, request, pk):
     #     serializer = ReservationSerializer(data=request.data)
@@ -138,11 +171,24 @@ class ReservationRequestCancel(generics.UpdateAPIView):
         reservation = self.get_object()
         if reservation.guest != self.request.user:
             return PermissionDenied('You do not have permission to cancel the reservation')
-        Notification.objects.create(sender=self.request.user, receiver=reservation.hotel.owner,
-                                    message='Someone cancel reservation.')
+
         reservation.request_cancel()
         print(reservation)
-        serializer.save(state='PC')
+        reservation_obj = serializer.save(state='P')
+
+        # create a new notification to hotel owner
+        notif_data = {'sender': self.request.user,
+                      'receiver': reservation_obj.hotel.owner.id,
+                      'detail': self.request.user.username + 'cancelled his/her booking at your property' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
+                      'content_tye': 8,
+                      'object_id': reservation_obj.id}
+
+        notif_serializer = NotificationSerializer(data=notif_data)
+        if notif_serializer.is_valid(raise_exception=True):
+            notif_serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'notification fails to be created'}, status=status.HTTP_400_BAD_REQUEST)
 
     # def put(self, request, pk):
     #     reservation = get_object_or_404(Reservation, pk=pk)
@@ -167,11 +213,24 @@ class ReservationApproveCancel(generics.UpdateAPIView):
         reservation = self.get_object()
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to approve the cancel')
-        Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    message='Your request to cancel the reservation is approved.')
+
         reservation.approve_cancel()
         print(reservation)
-        serializer.save(state='Ca')
+        reservation_obj = serializer.save(state='Ca')
+
+        # create a new notification to resident
+        notif_data = {'sender': self.request.user,
+                      'receiver': reservation_obj.guest.id,
+                      'detail': self.request.user.username + 'approved you cancellation at property ' + str(reservation_obj.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
+                      'content_tye': 8,
+                      'object_id': reservation_obj.id}
+
+        notif_serializer = NotificationSerializer(data=notif_data)
+        if notif_serializer.is_valid(raise_exception=True):
+            notif_serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'notification fails to be created'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ReservationDenyCancel(generics.UpdateAPIView):
@@ -187,10 +246,24 @@ class ReservationDenyCancel(generics.UpdateAPIView):
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to deny the cancel')
         Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    message='Your request to cancel is denied.')
+                                    detail='Your request to cancel is denied.')
         reservation.deny_cancel()
         print(reservation)
-        serializer.save(state='A')
+        reservation_obj = serializer.save(state='A')
+
+        # create a new notification to resident
+        notif_data = {'sender': self.request.user,
+                      'receiver': reservation_obj.guest.id,
+                      'detail': self.request.user.username + 'disapproved you cancellation at property ' + str(reservation_obj.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
+                      'content_tye': 8,
+                      'object_id': reservation_obj.id}
+
+        notif_serializer = NotificationSerializer(data=notif_data)
+        if notif_serializer.is_valid(raise_exception=True):
+            notif_serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'notification fails to be created'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ReservationTerminate(generics.UpdateAPIView):
@@ -206,10 +279,39 @@ class ReservationTerminate(generics.UpdateAPIView):
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to terminate the reservation')
         Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    message='Your reservation is Terminated.')
+                                    detail='Your reservation is approved.')
         reservation.terminate()
         print(reservation)
-        serializer.save(state='T')
+        reservation_obj = serializer.save(state='T')
+
+        # create a new notification to resident
+        notif_data1 = {'sender': self.request.user,
+                       'receiver': reservation_obj.guest.id,
+                       'detail': 'your reservation at hotel ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date) + ' terminated',
+                       'content_tye': 8,
+                       'object_id': reservation_obj.id}
+
+        notif1_serializer = NotificationSerializer(data=notif_data1)
+        if notif1_serializer.is_valid(raise_exception=True):
+            notif1_serializer.save()
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'notification fails to be created'}, status=status.HTTP_400_BAD_REQUEST)
+
+        notif_data2 = {'sender': self.request.user,
+                       'receiver': reservation_obj.guest.id,
+                       'detail': str(reservation_obj.guest.id) + ' reservation at ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date) + ' terminated',
+                       'content_tye': 8,
+                       'object_id': reservation_obj.id}
+
+        notif2_serializer = NotificationSerializer(data=notif_data2)
+        if notif2_serializer.is_valid(raise_exception=True):
+            notif2_serializer.save()
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'notification fails to be created'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(notif2_serializer.data, status=status.HTTP_201_CREATED)
 
     # def put(self, request, pk):
     #     reservation = get_object_or_404(Reservation, pk=pk)
