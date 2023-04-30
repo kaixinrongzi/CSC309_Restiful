@@ -19,8 +19,11 @@ urlpatterns = [
     path('reservation/<int:pk>/approve/', ReservationApprove.as_view(), name='reservation_approve'),
     path('reservation/<int:pk>/deny/', ReservationDeny.as_view(), name='reservation_deny'),
     path('reservation/<int:pk>/terminate/', ReservationTerminate.as_view(), name='reservation_terminate'),
-    path('reservation/<int:pk>/cancel/', ReservationDenyCancel.as_view(), name='reservation_cancel'),
+    path('reservation/<int:pk>/cancel/', ReservationRequestCancel.as_view(), name='reservation_cancel'),
+    path('reservation/<int:pk>/approvecancel/', ReservationApproveCancel.as_view(), name='reservation_approvecancel'), # approve the cancellation
+    path('reservation/<int:pk>/denycancel/', ReservationDenyCancel.as_view(), name='reservation_denycancel'), # deny the cancellation
     path('reservation/reserve/', ReservationReserve.as_view(), name='reservation_create'),
+    path('reservation/<int:pk>/finish/', ReservationFinish.as_view(), name='reservation_finish'),
     path('comment/add/', AddComment.as_view(), name="addcomment"),
     path('comments/view/', GetComments.as_view(), name='viewcomments'),
     path('comment/<int:pk>/view/', GetComment.as_view(), name='viewcomments'),
@@ -31,8 +34,7 @@ urlpatterns = [
     path('reply/<int:pk>/view/', ReplyView.as_view(), name='viewreply'),
     path('hotel/<int:pk>/comments/view/', GetCommentsforHotel.as_view(), name='viewcommentsforhotel'),
     path('commentsforme/view/', GetCommentsforMyself.as_view(), name='viewcommentsformyself'),
-    path('commentforme/<int:pk>/view/', GetCommentforMyself.as_view(), name='viewcommentformyself'),
-    path('comment/<int:pk>/replies/view/', CommentRepliesView.as_view(), name='viewrepliesforcomment')
+    path('commentforme/<int:pk>/view/', GetCommentforMyself.as_view(), name='viewcommentformyself')
 ]
 
 

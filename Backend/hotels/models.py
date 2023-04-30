@@ -87,6 +87,7 @@ class Reservation(models.Model):
         ('E', 'Expired'),
         ('T', 'Terminated'),
         ('F', 'Finished'),
+        ('PC', 'PendingCancel')
     ]
 
     guest = models.ForeignKey(MyUser, on_delete=models.CASCADE, null=True, blank=True)
@@ -115,6 +116,9 @@ class Reservation(models.Model):
         print("It is pending!")
         return self.state == 'P'
 
+    def is_pendingCancel(self):
+        return self.state == 'PC'
+
     @property
     def is_approved(self):
         return self.state == 'A'
@@ -136,16 +140,16 @@ class Reservation(models.Model):
     def request_cancel(self):
         if self.is_approved:
             print('change to P')
-            self.state = 'P'
+            self.state = 'PC'
         self.save()
 
     def approve_cancel(self):
-        if self.is_pending:
+        if self.is_pendingCancel(self):
             self.state = 'Ca'
         self.save()
 
     def deny_cancel(self):
-        if self.is_pending:
+        if self.is_pendingCancel(self):
             print('Deny cancel')
             self.state = 'A'
         self.save()
@@ -166,7 +170,7 @@ class Reservation(models.Model):
     def terminate(self):
         if self.is_approved:
             self.state = 'T'
-            self.save()
+        self.save()
 
 
 # class Notification(models.Model):

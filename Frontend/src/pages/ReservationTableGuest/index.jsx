@@ -24,7 +24,8 @@ const TableGuest = (props) => {
                         <td>{reservation.guest}</td>
                         <td>{reservation.hotel}</td>
                         <td>
-                            if (reservation.state === 'A') {
+                            {(reservation.state === 'A') 
+                            ? 
                                 <p>
                                     <button onClick={() => {
                                         alert("You will Cancel the reservation")
@@ -35,7 +36,7 @@ const TableGuest = (props) => {
                                         props.change(reservation.id, 'F')
                                     }}>Finish</button>
                                 </p>
-                            } else {
+                            : 
                                 <></>
                             }
                         </td>
