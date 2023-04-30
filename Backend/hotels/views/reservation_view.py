@@ -52,7 +52,7 @@ class ReservationReserve(generics.CreateAPIView):
 
         # create a notification to the hotel owner
         notif_data = {'receiver': hotel.owner.id,
-                      'detail': 'Someone reserve you property ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' +str(reservation_obj.end_date),
+                      'message': 'Someone reserve you property ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' +str(reservation_obj.end_date),
                       'content_type': 8,
                       'object_id': reservation_obj.id}
 
@@ -95,7 +95,7 @@ class ReservationApprove(generics.RetrieveAPIView, generics.UpdateAPIView):
 
         # create a new notification to resident
         notif_data = {'receiver': reservation_obj.guest.id,
-                      'detail': self.request.user.username + 'approved you reservation' + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
+                      'message': self.request.user.username + 'approved you reservation' + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
                       'content_type': 8,
                       'object_id': reservation_obj.id}
 
@@ -246,7 +246,7 @@ class ReservationApproveCancel(generics.UpdateAPIView):
 
         # create a new notification to resident
         notif_data = {'receiver': reservation_obj.guest.id,
-                      'detail': self.request.user.username + 'approved you cancellation at property ' + str(reservation_obj.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
+                      'message': self.request.user.username + 'approved you cancellation at property ' + str(reservation_obj.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
                       'content_tye': 8,
                       'object_id': reservation_obj.id}
 
@@ -278,7 +278,7 @@ class ReservationDenyCancel(generics.UpdateAPIView):
 
         # create a new notification to resident
         notif_data = {'receiver': reservation_obj.guest.id,
-                      'detail': self.request.user.username + 'disapproved you cancellation at property ' + str(reservation_obj.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
+                      'message': self.request.user.username + 'disapproved you cancellation at property ' + str(reservation_obj.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
                       'content_tye': 8,
                       'object_id': reservation_obj.id}
 
@@ -302,15 +302,14 @@ class ReservationTerminate(generics.UpdateAPIView):
         reservation = self.get_object()
         if reservation.hotel.owner != self.request.user:
             return PermissionDenied('You do not have permission to terminate the reservation')
-        Notification.objects.create(sender=self.request.user, receiver=reservation.guest,
-                                    detail='Your reservation is approved.')
+        
         reservation.terminate()
         print(reservation)
         reservation_obj = serializer.save(state='T')
 
         # create a new notification to resident
         notif_data1 = {'receiver': reservation_obj.guest.id,
-                       'detail': 'your reservation at hotel ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date) + ' terminated',
+                       'message': 'your reservation at hotel ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date) + ' terminated',
                        'content_tye': 8,
                        'object_id': reservation_obj.id}
 
@@ -322,7 +321,7 @@ class ReservationTerminate(generics.UpdateAPIView):
             return Response({'error': 'notification fails to be created'}, status=status.HTTP_400_BAD_REQUEST)
 
         notif_data2 = {'receiver': reservation_obj.guest.id,
-                       'detail': str(reservation_obj.guest.id) + ' reservation at ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date) + ' terminated',
+                       'message': str(reservation_obj.guest.id) + ' reservation at ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date) + ' terminated',
                        'content_tye': 8,
                        'object_id': reservation_obj.id}
 
