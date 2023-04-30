@@ -10,11 +10,10 @@ import './css/bulma/bulma-rtl.min.css'
 import $ from 'jquery';
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 
-
-export default function LogIn(){
+function LogIn(){
 
     const [isLogin, setIsLogin] = useState(false)
     const [token, setToken] = useState('')
@@ -105,3 +104,34 @@ export default function LogIn(){
 
 }
 
+
+function LogOut(){
+
+    const [logoutInfo, setLogoutInfo] = useState('')
+    const token = localStorage.getItem('token')
+
+    const navigate = useNavigate()
+    useEffect(()=>{
+        axios.
+            get('http://localhost:8000/accounts/logout/',
+                {headers: {'Authorization': 'Bearer '+token}}
+            ).then(response=>{
+                console.log(response.data)
+                localStorage.setItem('token', '')
+                setLogoutInfo(response.data.username + ' : ' + response.data.result)
+            })
+            .catch(err=>{
+                console.log(err)
+
+            })
+    }, [navigate])
+
+    return <main>
+        <div className='logout'>
+            <p className='logoutInfo'>{ logoutInfo }</p>
+        </div>
+    </main>
+
+}
+
+export {LogIn, LogOut}

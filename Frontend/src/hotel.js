@@ -92,6 +92,12 @@ export default function Hotels(){
             }
             ).then(response=>{
                 setHotels(response.data.results)
+            }).catch(error=>{
+                console.log(error.response)
+                if(error.response.status===401){
+                    alert('Unauthorized! Please Login')
+                    navigate('/accounts/login')
+                }
             })
     }
 

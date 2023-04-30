@@ -33,6 +33,7 @@ export default function Layout(){
                                 <li><NavLink to='/hotels/reservations/list/host' >My Property Reservations</NavLink></li>
                                 <li><NavLink to='/hotels/notifications/view' >My Notifications</NavLink></li>
                                 <li><NavLink to='/hotels/comments/view' >My Comments</NavLink></li>
+                                <li><NavLink to='/accounts/logout' > Log Out</NavLink></li>
                               </ul>
                          </li>
                          <li><a href="I have a property to post">Post Your Property</a></li>

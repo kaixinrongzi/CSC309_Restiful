@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useRoutes} from "react-router-dom";
 //import Home from "./home";
 import App from './App';
 import Register from './Register.js'
-import Login from './login.js'
+//import Login from './login.js'
 import Profile from './profile.js'
 //import UserLogIn from "./pages/login";
 // import { User, UserItem } from '';
@@ -17,7 +17,6 @@ export default
     <Routes>
         <Route index element={<App/>}></Route>
         <Route path='/register' element={<Register/>}></Route>
-        <Route path='/login' element={<Login/>}></Route>
         <Route path='/profile' element={<Profile props/>}></Route>
     </Routes>
 </Suspense>

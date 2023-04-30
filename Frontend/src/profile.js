@@ -9,7 +9,7 @@ import './css/bulma/bulma-rtl.css'
 import './css/bulma/bulma-rtl.css.map'
 import './css/bulma/bulma-rtl.min.css'
 import './css/userAccount.css'
-import {useLocation} from 'react-router-dom'
+import {useLocation, useNavigate} from 'react-router-dom'
 import $ from 'jquery';
 import axios from "axios";
 
@@ -19,6 +19,8 @@ export default function Profile(){
     const location = useLocation()
     console.log('location: ', location)
     const token = localStorage.getItem('token')
+
+    const navigate = useNavigate()
 
     const [first, setFirst] = useState(false)
     const [username, setUsername] = useState('')
@@ -78,6 +80,7 @@ export default function Profile(){
                if(error.response.status === 401){
                     //unauthorized
                      alert("Unauthorized! Please check your token")
+                     navigate('/accounts/login')
                }
             })
 
