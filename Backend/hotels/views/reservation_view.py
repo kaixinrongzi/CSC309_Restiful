@@ -51,7 +51,7 @@ class ReservationReserve(generics.CreateAPIView):
 
         # create a notification to the hotel owner
         notif_data = {'sender': self.request.user,
-                      'receiver': hotel.owner,
+                      'receiver': hotel.owner.id,
                       'detail': 'Someone reserve you property ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' +str(reservation_obj.end_date),
                       'content_tye': 8,
                       'object_id': reservation_obj.id}

@@ -68,6 +68,7 @@ class UsersLogin(ListAPIView):
         login(request, user)
 
         response = {
+            'id': user.id,
             'username': user.username,
             'email': user.email,
             'phone_number': user.phone_number,
