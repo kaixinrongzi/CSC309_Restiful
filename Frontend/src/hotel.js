@@ -15,6 +15,7 @@ export default function Hotels(){
 
         const [hotels, setHotels] = useState([])
         const [count, setCount] = useState(0)
+        const [addHotelCount, setAddHotelCount] = useState(0)
 
         const updateHotelHandler=(e)=>{
 
@@ -107,10 +108,53 @@ export default function Hotels(){
 
     }
 
-    const addHotelHandler=()=>{
-
+    const viewAvailabilityHandler=(e, hotel_id)=>{
+        navigate('/hotels/availabilities/view', {state: {hotel_id: hotel_id}, replace: false})
     }
 
+
+    const addHotelHandler=(e)=>{
+        if(addHotelCount === 0){
+            var myUl = e.target.closest('ul')
+            var addHotelDiv =$("<div className='addhotel'>" +
+                "<label for='newHotelName'>Hotel Name: </label>" +
+                "<input id='newHotelName'></input><br/>" +
+                "<label for='newHotelAddr'>Hotel Address: </label>" +
+                "<input id='newHotelAddr'></input><br/>" +
+                "<label for='newHotelDes'>Hotel Description: </label>" +
+                "<input id='newHotelDes'></input><br/>" +
+                "<label for='newHotelCap'>Hotel Capacity: </label>" +
+                "<input id='newHotelCap'></input><br/>" +
+                "<label for='newHotelBeds'>Hotel Beds: </label>" +
+                "<input id='newHotelBeds'></input><br/>" +
+                "<label for='newHotelBaths'>Hotel Baths: </label>" +
+                "<input id='newHotelBaths'></input><br/>" +
+                "<button>Add</button>" +
+            "</div>")
+            $(addHotelDiv).find('button').click(function(e){
+                console.log('hotel 135: ', localStorage.getItem('user_id'))
+                var myDiv = e.target.closest('div')
+                axios.post('http://localhost:8000/hotels/add/',
+                        {name: $(myDiv).find('#newHotelName').val(),
+                         description: $(myDiv).find('#newHotelDesc').val(),
+                         address: $(myDiv).find('#newHotelAddr').val(),
+                         capacity: $(myDiv).find('#newHotelCap').val(),
+                         beds: $(myDiv).find('#newHotelBeds').val(),
+                         baths: $(myDiv).find('#newHotelBaths').val(),
+                         owner: localStorage.getItem('user_id')
+                        },
+                        {headers: {"Authorization": 'Bearer '+ token}}
+                        ).then(response=>{
+                            console.log(response.data)
+                        }).catch(error=>{
+                            console.log(error.response)
+                        })
+                        })
+                        $(myUl).append(addHotelDiv)
+
+                        setAddHotelCount(1)
+        }
+    }
 
 
         return <div className="myProperty">
@@ -126,7 +170,8 @@ export default function Hotels(){
                                 <label for={hotel_id+'cap'}>capacity: </label><input id={hotel_id+'cap'} placeholder={value.capacity} />
                                 <label for={hotel_id+'beds'}>beds: </label><input id={hotel_id+'beds'} placeholder={value.beds} /><br/>
                                 <label for={hotel_id+'baths'}>baths: </label><input id={hotel_id+'baths'}  placeholder={value.baths}/>
-                                <button onClick={updateHotelHandler}>update</button><br/><br/>
+                                <button onClick={updateHotelHandler}>update</button><br/>
+                                <button onClick={e=>viewAvailabilityHandler(e, value.id)}> View Availabilities </button><br/><br/>
                                 <button onClick={viewCommentsHandler}>View Comments</button><br/><br/>
                                 <p className='hotel_update_err'></p>
                             </form>
