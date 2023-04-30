@@ -77,7 +77,7 @@ export default function Register(){
     if(!isRegistered){
         return <div className='register_overall'>
         <div className="loginOverlay">
-                        <a href="/login"><button class="btn" id="logIn">Log In</button></a>
+                        <a href="/accounts/login"><button class="btn" id="logIn">Log In</button></a>
             </div>
             <div className="register">
                         <form className="form" id="form2" >
@@ -95,7 +95,7 @@ export default function Register(){
             </div>
             </div>
     }else{
-        return <Navigate to='/login'></Navigate>
+        return <Navigate to='/accounts/login'></Navigate>
     }
 
 

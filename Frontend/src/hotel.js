@@ -107,6 +107,10 @@ export default function Hotels(){
 
     }
 
+    const addHotelHandler=()=>{
+
+    }
+
 
 
         return <div className="myProperty">
@@ -128,7 +132,7 @@ export default function Hotels(){
                             </form>
                   })
                 }
-                <li><button>Add Hotel</button></li>
+                <li><button onClick={ addHotelHandler }>Add Hotel</button></li>
             </ul>
       </div>
     }

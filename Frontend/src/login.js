@@ -94,7 +94,7 @@ function LogIn(){
 				<p id='login_error'></p>
 			</div>
             <div className="registerOverlay">
-                <a href="/register"><button className="btn" id="signIn">Register</button></a>
+                <a href="/accounts/register"><button className="btn" id="signIn">Register</button></a>
            </div>
 
            </div>
