@@ -81,17 +81,23 @@ class UpdateAvailability(RetrieveAPIView, UpdateAPIView):
 
 class SearchHotelAvailability(ListAPIView):
     serializer_class = HotelAvailabilitySerializer
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
+        hotel_id = self.request.query_params.get('hotel', None)
         start = self.request.query_params.get('start_date', None)
         print(start)
         end = self.request.query_params.get('end_date', None)
-        beds = self.request.query_params.get('beds', None)
+        max_price = self.request.query_params.get('price', None)
         query = HotelAvailability.objects.all()
         obj = HotelAvailability.objects.all().first()
         if start and end:
             query = query.filter(start_date__lte=start)
-            query = query.filter(end_date__gte=end)  
+            query = query.filter(end_date__gte=end)
+        if max_price:
+            query = query.filter(price__lte=max_price)
+        if hotel_id:
+            query = query.filter(hotel=hotel_id)
         # print(query.values('hotel__id'))
         return query
         # return query.values('hotel__id', 'hotel__name', 'hotel__address', 'hotel__description', 'hotel__rating', 'hotel__capacity', 'hotel__beds', 'hotel__baths').distinct()
@@ -114,7 +120,6 @@ class SearchHotel(ListAPIView):
         capacity = self.request.query_params.get('capacity', None)
         beds = self.request.query_params.get('beds', None)
         baths = self.request.query_params.get('baths', None)
-
         order_by = self.request.query_params.get('ordering', None)
         
         if address:
