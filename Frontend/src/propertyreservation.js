@@ -42,8 +42,8 @@ export default function MyPropertyReservations(){
          })
     }
 
-    const conditional_comment_for_resident = (booking_state)=>{
-        return booking_state==='F'? <button onClick={commentforResidentHandler}>Comment</button>:''
+    const conditional_comment_for_resident = (booking)=>{
+        return booking.state==='F'? <button onClick={commentforResidentHandler}>Comment</button>:''
     }
 
     const commentforResidentHandler=(e)=>{
@@ -64,7 +64,7 @@ export default function MyPropertyReservations(){
                   propertyReservations.map((value, index)=>{
                     return <li key={index}>
                         hotel_id: {value.hotel}, resident_id: {value.guest}, start-date: {value.start_date}, end-date: {value.end_date}, guest numbers: {value.guests}, state: {value.state}
-                        { conditional_comment_for_resident(value.state) }
+                        { conditional_comment_for_resident(value) }
                     </li>
                   })
                 }

@@ -11,6 +11,7 @@ import './css/userAccount.css'
 function CommentAdd(){
 
 //    const location = useLocation()
+//    const hotel_id=location.state?location.state.hotel_id:''
     const navigate = useNavigate()
 //    console.log('10', location.state)
 //    if(!location.state){
@@ -235,32 +236,49 @@ function CommentsView(){
     const user_name = useSelector(state=>state.user.user_name)
     console.log('comment 167: ', user_id + user_name)
 
-    const [comments, setComments] = useState([])
-    const [commentCounts, setCommentCounts] = useState(0)
-    const [currentPage, setCurrentPage] = useState(1)
+    const [mycomments, setMyComments] = useState([])
+    const [commentsOnMe, setCommentsOnMe] = useState([])
+    const [commentsOnMyHotels, setCommentsOnMyHotels] = useState([])
+    const [mycommentCounts, setMyCommentCounts] = useState(0)
+    const [commentOnMeCounts, setCommentOnMeCounts] = useState(0)
+    const [commentOnMyHotelsCounts, setCommentOnMyHotelsCounts] = useState(0)
+    const [currentPage1, setCurrentPage1] = useState(1)
+    const [currentPage2, setCurrentPage2] = useState(1)
+    const [currentPage3, setCurrentPage3] = useState(1)
     const [lastPage, setLastPage] = useState(2)
     const [currentPageDisplay, setCurrentPageDisplay] = useState(1)
 
     useEffect(()=>{
-        getComments(true)
-    }, [currentPage])
-
-    useEffect(()=>{
-        getComments(false)
+        getMyComments(true)
+        getCommentsOnMe(true)
+        getCommentsforHotels(true)
     }, [navigate])
 
-    function getComments(first_time){
+    useEffect(()=>{
+        getMyComments(false)
+    }, [currentPage1])
+
+    useEffect(()=>{
+        getCommentsOnMe(false)
+    }, [currentPage2])
+
+    useEffect(()=>{
+        getCommentsforHotels(false)
+    }, [currentPage3])
+
+
+    function getMyComments(first_time){
         axios
          .get('http://localhost:8000/hotels/comments/view/',
             {
                headers: {"Authorization": 'Bearer '+ token},
-               params: {page: currentPage}
+               params: {page: currentPage1}
             }
             ).then(response=>{
                 console.log(response.data)
-                setComments(response.data.results)
+                setMyComments(response.data.results)
                 if(first_time){
-                    setCommentCounts(response.data.count)
+                    setMyCommentCounts(response.data.count)
                 }
          }).catch(error=>{
             console.log(error)
@@ -268,8 +286,52 @@ function CommentsView(){
                     //unauthorized
                 alert("Unauthorized! Please check your token")
                 navigate('/accounts/login')
-            }else if(error.response.status === 404){
-                setLastPage(currentPage)
+            }
+         })
+    }
+
+    function getCommentsOnMe(first_time){
+        axios
+         .get('http://localhost:8000/hotels/commentsforme/view/',
+            {
+               headers: {"Authorization": 'Bearer '+ token},
+               params: {page: currentPage2, content_type: 'myuser'}
+            }
+            ).then(response=>{
+                console.log(response.data)
+                setCommentsOnMe(response.data.results)
+                if(first_time){
+                    setCommentOnMeCounts(response.data.count)
+                }
+         }).catch(error=>{
+            console.log(error)
+            if(error.response.status === 401){
+                    //unauthorized
+                alert("Unauthorized! Please check your token")
+                navigate('/accounts/login')
+            }
+         })
+    }
+
+    function getCommentsforHotels(first_time){
+        axios
+         .get('http://localhost:8000/hotels/commentsforme/view/',
+            {
+               headers: {"Authorization": 'Bearer '+ token},
+               params: {page: currentPage3, content_type: 'hotel'}
+            }
+            ).then(response=>{
+                console.log(response.data)
+                setCommentsOnMyHotels(response.data.results)
+                if(first_time){
+                    setCommentOnMyHotelsCounts(response.data.count)
+                }
+         }).catch(error=>{
+            console.log(error)
+            if(error.response.status === 401){
+                    //unauthorized
+                alert("Unauthorized! Please check your token")
+                navigate('/accounts/login')
             }
          })
     }
@@ -308,31 +370,76 @@ function CommentsView(){
         navigate('/hotels/reply/add', {state: {object_id: comment_id, reply_to: 'comment'}, replace: false})
     }
 
-    const previousPageHandler=()=>{
-        if(currentPage > 1){
-            setCurrentPage(currentPage - 1)
-        }
+    const previousPageHandler=(e)=>{
+        const class_name = e.target.closest('main').className
+        if(class_name==='mycomments'){
+            if(currentPage1 > 1){
+            setCurrentPage1(currentPage1 - 1)}
+        }else if(class_name==='comments_on_me'){
+            if(currentPage2 > 1){
+            setCurrentPage2(currentPage1 - 1)}
+        }else if(class_name==='comments_on_my_hotel'){
+            if(currentPage2 > 1){
+            setCurrentPage2(currentPage1 - 1)}}
     }
 
-    const nextPageHandler=()=>{
-        if(currentPage < Math.ceil(commentCounts / 5)){
-            setCurrentPage(currentPage + 1)
-        }
+
+    const nextPageHandler=(e)=>{
+        const class_name = e.target.closest('main').className
+        if(class_name==='mycomments'){
+            if(currentPage1 < Math.ceil(mycommentCounts / 5)){
+            setCurrentPage1(currentPage1 + 1)}
+        }else if(class_name==='comments_on_me'){
+            if(currentPage2 < Math.ceil(commentOnMeCounts / 5)){
+            setCurrentPage2(currentPage2 + 1)}
+        }else if(class_name==='comments_on_my_hotels'){
+            if(currentPage3 < Math.ceil(commentOnMyHotelsCounts / 5)){
+            setCurrentPage3(currentPage3 + 1)}}
     }
 
 
-   return <main className='comments'>
+   return <div>
+    <main className='mycomments'>
+            <p><b>My Comments</b></p>
             <ul>
                 {
-                    comments.map((value, index)=>{
+                    mycomments.map((value, index)=>{
                         return <li key={index} id={value.id}><a onClick={e=>{commentViewHandler(e, value.id)} }><b/>Comment Id: {value.id} - <b/>Rating: {value.rating} - <b/>Detail: {value.detail} -  <b/>Receiver: {conditional_receiver_name(value.receiver)}</a></li>
                      })
                 }
             </ul>
             <ul className='pagesHandler'>
-                <button onClick={previousPageHandler}>Previous Page</button> Current Page: {currentPage} <button onClick={nextPageHandler}>Next Page</button>
+                <button onClick={previousPageHandler}>Previous Page</button> Current Page: {currentPage1} <button onClick={nextPageHandler}>Next Page</button>
             </ul>
    </main>
+   <main className='comments_on_me'>
+        <p><b>Comments On Me</b></p>
+        <ul>
+                {
+                    commentsOnMe.map((value, index)=>{
+                        return <li key={index} id={value.id}><a onClick={e=>{commentViewHandler(e, value.id)} }><b/>Comment Id: {value.id} - <b/>Rating: {value.rating} - <b/>Detail: {value.detail} -  <b/>Receiver: {conditional_receiver_name(value.receiver)}</a></li>
+                     })
+                }
+            </ul>
+            <ul className='pagesHandler'>
+                <button onClick={previousPageHandler}>Previous Page</button> Current Page: {currentPage2} <button onClick={nextPageHandler}>Next Page</button>
+            </ul>
+   </main>
+   <main className='comments_on_my_hotels'>
+        <p><b>Comments On My Hotels</b></p>
+        <ul>
+                {
+                    commentsOnMyHotels.map((value, index)=>{
+                        return <li key={index} id={value.id}><a onClick={e=>{commentViewHandler(e, value.id)} }><b/>Comment Id: {value.id} - <b/>Rating: {value.rating} - <b/>Detail: {value.detail} -  <b/>Receiver: {conditional_receiver_name(value.receiver)}</a></li>
+                     })
+                }
+            </ul>
+            <ul className='pagesHandler'>
+                <button onClick={previousPageHandler}>Previous Page</button> Current Page: {currentPage3} <button onClick={nextPageHandler}>Next Page</button>
+            </ul>
+   </main>
+   </div>
+
 
 }
 

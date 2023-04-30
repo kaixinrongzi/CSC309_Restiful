@@ -215,9 +215,9 @@ div.replyview{
 
 }
 
-div main.comments{
+div main.comments_for_hotel{
     position: absolute;
-    top: 15rem;
+    top: 40rem;
     width: 70vw;
     height: 20rem;
     display: flex;
@@ -226,9 +226,31 @@ div main.comments{
     align-content: left;
 }
 
-div main.comments_for_hotel{
+div main.mycomments{
     position: absolute;
-    top: 15rem;
+    top: 20rem;
+    width: 70vw;
+    height: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    align-content: left;
+}
+
+div main.comments_on_me{
+    position: absolute;
+    top: 40rem;
+    width: 70vw;
+    height: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    align-content: left;
+}
+
+div main.comments_on_my_hotels{
+    position: absolute;
+    top: 60rem;
     width: 70vw;
     height: 20rem;
     display: flex;
@@ -240,6 +262,17 @@ div main.comments_for_hotel{
 div ul.pagesHandler{
     display: flex;
     flex-direction: row
+}
+
+@media screen and (min-width: 480px){
+    div.myProperty ul form{
+        position: relative;
+        height: calc(65px + 128px + 200px + 5em + 2em + 20em + 3em);
+        overflow-y: scroll;
+        display:flex;
+        flex-direction: column
+        /* border: 1px solid red */
+    }
 }
 
 

@@ -119,6 +119,11 @@ class AddComment(CreateAPIView):
             except:
                 return Response({"error": "the user you are commenting does not exist"}, status=status.HTTP_403_FORBIDDEN)
 
+            # # check if the commented_user has ever lived in your hotel
+            # reservations = Reservation.objects.filter(guest=commented_user, hotel=request.data['hotel_id'])
+            # if not reservations:
+            #     return Response({'error': 'the user has never lived in your hotel'})
+
             # create a comment
             if 'author' in comment and comment['author'] != '':
                 author = comment['author']
@@ -220,7 +225,9 @@ class GetCommentsforMyself(ListAPIView):
     permission_class = [IsAuthenticated]
 
     def get_queryset(self):
-        comments = Comment.objects.filter(receiver=self.request.user.id)
+        model = self.request.query_params.get('content_type')
+        print(229, model)
+        comments = Comment.objects.filter(receiver=self.request.user.id, content_type=ContentType.objects.get(model=model))
         return comments
 
 

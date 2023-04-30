@@ -12,16 +12,18 @@ export default function MyBookings(){
 
     const [reservations, setReservations] = useState([])
     const [count, setCount] = useState(0)
+    const [bookingCounts, setBookingCounts] = useState(0)
+    const [currentPage, setCurrentPage] = useState(1)
+
+    const navigate = useNavigate()
+
 
 //    const token = useSelector(state=>state.token.token)
     const token = localStorage.getItem('token')
     console.log('bookings 14: ', token)
-    const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    if(count===0){
-        setCount(1)
-
+    useEffect(()=>{
         axios
          .get('http://localhost:8000/hotels/reservation/list/',
             {
@@ -32,7 +34,7 @@ export default function MyBookings(){
             .then(response=>{
                 console.log('get reservations: ', response.data.results)
                 setReservations(response.data.results)
-
+                setBookingCounts(response.data.count)
          }).catch(e=>{
             console.log(e)
             if(e.response.status===401){
@@ -40,7 +42,28 @@ export default function MyBookings(){
                 navigate('/accounts/login')
             }
          })
-    }
+    }, [navigate])
+
+    useEffect(()=>{
+        axios
+         .get('http://localhost:8000/hotels/reservation/list/',
+            {
+                headers: {"Authorization": 'Bearer '+ token},
+                params: {user_type: 'guest', page: currentPage}
+            }
+            )
+            .then(response=>{
+                console.log('get reservations: ', response.data.results)
+                setReservations(response.data.results)
+                setBookingCounts(response.data.count)
+         }).catch(e=>{
+            console.log(e)
+            if(e.response.status===401){
+                alert('unauthorized token')
+                navigate('/accounts/login')
+            }
+         })
+    },[currentPage])
 
     const conditional_comment_for_hotel = (booking_state)=>{
         return booking_state==='F'? <button onClick={commentforHotelHandler}>Comment</button>:''
@@ -61,6 +84,19 @@ export default function MyBookings(){
         navigate('/hotels/comment/add')
     }
 
+
+    const previousPageHandler=()=>{
+        if(currentPage > 1){
+            setCurrentPage(currentPage - 1)
+        }
+    }
+
+    const nextPageHandler=()=>{
+        if(currentPage < Math.ceil(bookingCounts / 5)){
+            setCurrentPage(currentPage + 1)
+        }
+    }
+
     return <div className="myRenting">
           <ul>
               <li><span className="title">Where I booked</span></li>
@@ -76,6 +112,11 @@ export default function MyBookings(){
 
                   })
                 }
+            </ul>
+            <ul className='pagesHandler'>
+                <li><button onClick={previousPageHandler}>Previous Page</button></li>
+                <li>Current Page: { currentPage }</li>
+                <li><button onClick={nextPageHandler}>Next Page</button></li>
             </ul>
           </div>
       </div>
