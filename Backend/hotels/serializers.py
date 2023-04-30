@@ -1,3 +1,4 @@
+from rest_framework.fields import IntegerField
 from rest_framework.serializers import ModelSerializer
 from .models import Hotel, HotelAvailability, Comment, Reservation, Notification, Reply
 from django.contrib.contenttypes.models import ContentType

@@ -144,3 +144,12 @@ class DeleteHotel(DestroyAPIView):
     def get_object(self):
         hotel = get_object_or_404(Hotel.objects.all(), pk=self.kwargs['pk'])
         return hotel
+
+
+class ViewHotel(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = HotelSerializer
+
+    def get_queryset(self):
+        hotels = Hotel.objects.filter(owner=self.request.user)
+        return hotels

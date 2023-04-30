@@ -181,7 +181,7 @@ class Notification(models.Model):
     date = models.DateTimeField(default=datetime.now())
     message = models.TextField()
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
+    object_id = models.PositiveIntegerField(default=-1)
 
     def get_map(self):
         return {"receiver": self.receiver,

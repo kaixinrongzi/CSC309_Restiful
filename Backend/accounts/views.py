@@ -404,7 +404,7 @@ class UsersLogout(APIView):
     def get(self, request):
         username = request.user.username
         logout(request)
-        return Response({username: "logout"})
+        return Response({'username': username, 'result': "logout"})
 
 
 class UsersProfileView(ListAPIView):
