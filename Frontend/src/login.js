@@ -61,7 +61,7 @@ function LogIn(){
                         },
                         {headers: {'Authorization': 'Bearer '+response.data.access}}
                         ).then(response=>{
-                            console.log(response.data)
+                            localStorage.setItem('user', response.data)
                             localStorage.setItem('user_id', response.data.id)
                         }).catch(error=>console.log(error))
 

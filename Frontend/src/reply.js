@@ -41,9 +41,12 @@ function ReplyAdd(){
             $('.reply_info').html(reply_info)
         }).catch(error=>{
             console.log(error.response)
-            if(error.response.status===401){
-                $('.reply_info').html(error.response.status + ' ' + error.response.statusText)
-            }
+            $('.reply_info').html(error.response.status + ' ' + error.response.statusText + ' : ' + error.response.data.error)
+//            if(error.response.status===401){
+//                $('.reply_info').html(error.response.status + ' ' + error.response.statusText)
+//            }else if(error.response.status===400){
+//                $('.reply_info').html(error.response.status + ' ' + error.response.statusText)
+//            }
         })
 
     }

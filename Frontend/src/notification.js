@@ -21,18 +21,20 @@ function NotificationViewAll(){
 //    const token = useSelector(state=>state.token.token)
     const token = localStorage.getItem('token')
 
-    const [count, setCount] = useState(0)
+    const [notificationCounts, setNotificationCounts] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [notifications, setNotifications] = useState([])
     const [notifications_error, setNotificationsError] = useState('')
-    const [lastPage, setLastPage] = useState(2)
-    const [currentPageDisplay, setcurrentPageDisplay] = useState(1)
 
     useEffect(()=>{
-        getNotifications()
+        getNotifications(true)
+    }, [navigate])
+
+    useEffect(()=>{
+        getNotifications(false)
     }, [currentPage])
 
-    function getNotifications(){
+    function getNotifications(first_time){
 //        alert('32')
         axios
          .get('http://localhost:8000/hotels/notifications/view/',
@@ -44,8 +46,9 @@ function NotificationViewAll(){
                 console.log(response)
                 setNotifications(response.data.results.slice())
                 setNotificationsError('')
-                setLastPage(lastPage + 1)
-                setcurrentPageDisplay(currentPage)
+                if(first_time){
+                    setNotificationCounts(response.data.count)
+                }
             }).catch(error=>{
                 console.log(error)
                 if(error.response.status===401){
@@ -55,14 +58,9 @@ function NotificationViewAll(){
                 }else if(error.response.status===404){
                     //page not found
                     setNotificationsError('END')
-                    setLastPage(currentPage)
+
                 }
             })
-    }
-
-    if(count===0){
-        setCount(1)
-        getNotifications()
     }
 
     const NotificationReadHandler=(e, notification)=>{
@@ -86,7 +84,7 @@ function NotificationViewAll(){
     }
 
     const nextPageHandler=()=>{
-        if(currentPage < lastPage){
+        if(currentPage < Math.ceil(notificationCounts / 5)){
             setCurrentPage(currentPage + 1)
         }
     }
@@ -102,7 +100,7 @@ function NotificationViewAll(){
 
             }
         </ul>
-        <button onClick={previousPageHandler}>Previous Page</button>Current Page {  currentPageDisplay } <button onClick={nextPageHandler}>Next Page</button>
+        <button onClick={previousPageHandler}>Previous Page</button>Current Page {  currentPage } <button onClick={nextPageHandler}>Next Page</button>
         <p className='notifications_error'>{ notifications_error }</p>
     </main>
 

@@ -122,35 +122,82 @@ function CommentView(){
 
     const [comment, setComment] = useState('')
     const [count, setCount] = useState(0)
+    const [replies, setReplies] = useState([])
 
-    if(count===0){
-        setCount(1)
+    useEffect(()=>{
         axios
          .get('http://localhost:8000/hotels/commentforme/' + comment_id + '/view/',
             {
                headers: {"Authorization": 'Bearer '+ token}
             }
             ).then(response=>{
-                console.log(response.data)
                 setComment(response.data)
          }).catch(error=>{
             console.log(error)
             if(error.response.status === 401){
-                    //unauthorized
-                     alert("Unauthorized! Please check your token")
-                     navigate('/accounts/login')
-               }
+               //unauthorized
+               alert("Unauthorized! Please check your token")
+               navigate('/accounts/login')
+            }
          })
-    }
 
-    const commentTarget=()=>{
-        console.log(comment.content_type)
-        if(parseInt(comment.content_type) === 7){//comment on hotel
-            return <b>There is a comment on your hotel {comment.object_id}</b>
-        }else if(parseInt(comment.content_type) === 6){
-            return <b>There is a comment on you</b>
-        }else{
-             return <b>Unknown Error</b>
+    }, [navigate])
+
+    useEffect(()=>{
+        axios.
+            get("http://localhost:8000/hotels/comment/" + comment.id + '/replies/view/',
+                {
+                headers: {"Authorization": 'Bearer '+ token}
+                }
+            ).then(response=>{
+                console.log('comment 164:', response)
+                setReplies(response.data.results)
+//                return <ul className='replies'>
+//                    {replies.forEach((value, index)=>{
+//                        <li key={index}>author: {value.author} - details: {value.detail}</li>
+//                    })}
+//                </ul>
+            }
+            ).catch(error=>{
+                console.log(error)
+            })
+    }, [comment])
+
+//    const commentTarget=()=>{
+//        console.log(comment.content_type)
+//        if(parseInt(comment.content_type) === 7){//comment on hotel
+//            return <b>Your comment on hotel {comment.object_id}</b>
+//        }else if(parseInt(comment.content_type) === 6){
+//            return <b>Your comment on resident {comment.object_id}</b>
+//        }else{
+//             return <b>Unknown Error</b>
+//        }
+//    }
+
+//    const replies=()=>{
+//        axios.
+//            get("http://localhost:8000/hotels/comment/" + comment.id + '/replies/view/',
+//                {
+//                headers: {"Authorization": 'Bearer '+ token}
+//                }
+//            ).then(response=>{
+//                console.log('comment 164:', response)
+//                setReplies(response.data.results)
+////                return <ul className='replies'>
+////                    {replies.forEach((value, index)=>{
+////                        <li key={index}>author: {value.author} - details: {value.detail}</li>
+////                    })}
+////                </ul>
+//            }
+//            ).catch(error=>{
+//                console.log(error)
+//            })
+//    }
+    const conditional_rest=(comment)=>{
+        if(comment.content_type===7){
+            return <><b>Hotel ID: </b> {comment.object_id}</>
+        }else if(comment.content_type===6){
+            return <><b>User ID: </b> {comment.object_id}</>
         }
     }
 
@@ -160,8 +207,18 @@ function CommentView(){
     }
 
    return <main className='comment'>
-        { commentTarget() } <br/>
-        <b>Rating: </b>{comment.rating} - <b>Detail: </b>{comment.detail} <br/>
+       {/*{ commentTarget() } <br/>*/}
+        <b>Author: </b>{comment.author} - <b>Rating: </b>{comment.rating} - <b>Detail: </b>{comment.detail} - {conditional_rest(comment)} <br/>
+        <span><b>replies:</b>
+            <ul className='replies'>
+                {
+                    replies.map((value, index)=>{
+                        return <li key={index} className='reply'>author {value.author} replies: {value.detail}</li>
+                    })
+                }
+            </ul>
+        </span>
+
         <button onClick={replyHandler}>Reply</button>
    </main>
 
@@ -179,16 +236,20 @@ function CommentsView(){
     console.log('comment 167: ', user_id + user_name)
 
     const [comments, setComments] = useState([])
-    const [count, setCount] = useState(0)
+    const [commentCounts, setCommentCounts] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [lastPage, setLastPage] = useState(2)
     const [currentPageDisplay, setCurrentPageDisplay] = useState(1)
 
     useEffect(()=>{
-        getComments()
+        getComments(true)
     }, [currentPage])
 
-    function getComments(){
+    useEffect(()=>{
+        getComments(false)
+    }, [navigate])
+
+    function getComments(first_time){
         axios
          .get('http://localhost:8000/hotels/comments/view/',
             {
@@ -198,9 +259,9 @@ function CommentsView(){
             ).then(response=>{
                 console.log(response.data)
                 setComments(response.data.results)
-                setLastPage(currentPage + 1)
-                setCurrentPageDisplay(currentPage)
-//                isAuthenticated = true
+                if(first_time){
+                    setCommentCounts(response.data.count)
+                }
          }).catch(error=>{
             console.log(error)
             if(error.response.status === 401){
@@ -211,11 +272,6 @@ function CommentsView(){
                 setLastPage(currentPage)
             }
          })
-    }
-
-    if(count===0){
-        setCount(1)
-        getComments()
     }
 
     const conditional_author_name = (author_id)=>{
@@ -244,6 +300,10 @@ function CommentsView(){
 
     }
 
+    const commentViewHandler=(e, comment_id)=>{
+        navigate('/hotels/comment/view', {state: {comment_id: comment_id}, replace: false})
+    }
+
     const replyHandler=(e, comment_id)=>{
         navigate('/hotels/reply/add', {state: {object_id: comment_id, reply_to: 'comment'}, replace: false})
     }
@@ -255,7 +315,7 @@ function CommentsView(){
     }
 
     const nextPageHandler=()=>{
-        if(currentPage < lastPage){
+        if(currentPage < Math.ceil(commentCounts / 5)){
             setCurrentPage(currentPage + 1)
         }
     }
@@ -265,11 +325,13 @@ function CommentsView(){
             <ul>
                 {
                     comments.map((value, index)=>{
-                        return <li key={index} id={value.id}><b/>Comment Id: {value.id} - <b/>Rating: {value.rating} - <b/>Detail: {value.detail} - <b/>Author: { conditional_author_name(value.author) } - <b/>Receiver: {conditional_receiver_name(value.receiver_id)}{ conditional_reply(value.author, value.id) }</li>
+                        return <li key={index} id={value.id}><a onClick={e=>{commentViewHandler(e, value.id)} }><b/>Comment Id: {value.id} - <b/>Rating: {value.rating} - <b/>Detail: {value.detail} -  <b/>Receiver: {conditional_receiver_name(value.receiver)}</a></li>
                      })
                 }
             </ul>
-            <button onClick={previousPageHandler}>Previous Page</button> Current Page: {currentPageDisplay} <button onClick={nextPageHandler}>Next Page</button>
+            <ul className='pagesHandler'>
+                <button onClick={previousPageHandler}>Previous Page</button> Current Page: {currentPage} <button onClick={nextPageHandler}>Next Page</button>
+            </ul>
    </main>
 
 }
@@ -317,15 +379,13 @@ function CommentsforHotelView(){
             })
     }
 
-//    if(count===0){
-//        setCount(1)
-//        getCommentsforHotel(1)
-//    }
+//     const replyHandler=(e, comment_id)=>{
+//        navigate('/hotels/reply/add', {state: {object_id: comment_id, reply_to: 'comment'}, replace: false})
+//     }
 
-
-     const replyHandler=(e, comment_id)=>{
-        navigate('/hotels/reply/add', {state: {object_id: comment_id, reply_to: 'comment'}, replace: false})
-     }
+    const commentViewHandler=(e, comment_id)=>{
+        navigate('/hotels/comment/view', {state: {comment_id: comment_id}, replace: false})
+    }
 
      const previousPageHandler=()=>{
         if(currentPage > 1){
@@ -344,14 +404,14 @@ function CommentsforHotelView(){
         <ul>
             {
                 comments.map((value, index)=>{
-                    return <li key={index} id={value.id}><b/>Comment Id: {value.id} - <b/>Rating: {value.rating} - <b/>Detail: {value.detail} - <b/>Author: { value.author} <button onClick={(e)=>{replyHandler(e, value.id)}}>Reply</button></li>
+                    return <li key={index} id={value.id}><a onClick={e=>{commentViewHandler(e, value.id)}}><b/>Comment Id: {value.id} - <b/>Rating: {value.rating} - <b/>Detail: {value.detail} - <b/>Author: { value.author} </a></li>
                 })
             }
         </ul>
-        <button onClick={previousPageHandler}>Previous Page</button> Current Page: {currentPageDisplay} <button onClick={nextPageHandler}>Next Page</button>
+        <ul className='pagesHandler'>
+            <button onClick={previousPageHandler}>Previous Page</button> Current Page: {currentPageDisplay} <button onClick={nextPageHandler}>Next Page</button>
+        </ul>
     </main>
 }
-
-
 
 export {CommentAdd, CommentView, CommentsView, CommentsforHotelView}

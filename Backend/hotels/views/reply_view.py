@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.contenttypes.models import ContentType
 from ..serializers import ReplySerializer, NotificationSerializer
-from ..models import Reply, Comment, Notification
+from ..models import Reply, Comment, Notification, Hotel
 import sys
 
 sys.path.append("...")
@@ -50,7 +50,6 @@ class ReplyAdd(CreateAPIView):
         QueryDict('', mutable=True).update(ordinary_dict)
         serializer = self.get_serializer(data=ordinary_dict)
         serializer.is_valid(raise_exception=True)
-        reply_obj = serializer.save()
 
         # find out who it is replying to
         if reply_to == '11' or reply_to == 11:  # reply to a comment
@@ -58,6 +57,15 @@ class ReplyAdd(CreateAPIView):
                 comment = Comment.objects.get(id=object_id)
                 receiver = comment.author
 
+                # check if the comment is a comment for a hotel
+                if str(comment.content_type.model) == 'hotel':  # comment is for a hotel
+                    # check if the hotel owner has replied you
+                    commented_hotel = get_object_or_404(Hotel, id=comment.object_id)
+                    hotel_owner_replies = Reply.objects.filter(reply_to=ContentType.objects.get(model='comment'), object_id=comment.id, author=commented_hotel.owner.id)
+                    if not hotel_owner_replies and commented_hotel.owner != request.user:  # no replies && the comment is not made by the user
+                        return Response({"error": "hotel owner has not replied you yet, so you cannot comment/reply twice"}, status=status.HTTP_403_FORBIDDEN)
+
+                reply_obj = serializer.save()
                 # create notification
                 notif_data = {'receiver': receiver.id,
                               'message': "a reply to your comment " + str(comment.id),
@@ -81,6 +89,8 @@ class ReplyAdd(CreateAPIView):
             try:
                 reply = Reply.objects.get(id=reply['object_id'])
                 receiver = reply.author
+
+                reply_obj = serializer.save()
                 # create notification
                 notif_data = {'receiver': receiver.id,
                               'message': "a reply to your reply " + reply.id,
@@ -108,3 +118,12 @@ class ReplyView(RetrieveAPIView):
     def get_object(self):
         reply = get_object_or_404(Reply, id=self.kwargs['pk'])
         return reply
+
+
+class CommentRepliesView(ListAPIView):
+    serializer_class = ReplySerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        comment_id = self.kwargs['pk']
+        replies = Reply.objects.filter(reply_to=ContentType.objects.get(model='comment'), object_id=comment_id)
+        return replies

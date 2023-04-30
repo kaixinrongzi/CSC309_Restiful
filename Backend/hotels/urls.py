@@ -31,7 +31,8 @@ urlpatterns = [
     path('reply/<int:pk>/view/', ReplyView.as_view(), name='viewreply'),
     path('hotel/<int:pk>/comments/view/', GetCommentsforHotel.as_view(), name='viewcommentsforhotel'),
     path('commentsforme/view/', GetCommentsforMyself.as_view(), name='viewcommentsformyself'),
-    path('commentforme/<int:pk>/view/', GetCommentforMyself.as_view(), name='viewcommentformyself')
+    path('commentforme/<int:pk>/view/', GetCommentforMyself.as_view(), name='viewcommentformyself'),
+    path('comment/<int:pk>/replies/view/', CommentRepliesView.as_view(), name='viewrepliesforcomment')
 ]
 
 

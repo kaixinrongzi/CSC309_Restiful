@@ -151,7 +151,7 @@ div.myProperty{
 
 div.myProperty ul{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between
 }
 
@@ -214,3 +214,32 @@ div.replyview{
     align-content: left;
 
 }
+
+div main.comments{
+    position: absolute;
+    top: 15rem;
+    width: 70vw;
+    height: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    align-content: left;
+}
+
+div main.comments_for_hotel{
+    position: absolute;
+    top: 15rem;
+    width: 70vw;
+    height: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    align-content: left;
+}
+
+div ul.pagesHandler{
+    display: flex;
+    flex-direction: row
+}
+
+

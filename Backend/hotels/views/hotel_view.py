@@ -157,4 +157,5 @@ class ViewHotel(ListAPIView):
 
     def get_queryset(self):
         hotels = Hotel.objects.filter(owner=self.request.user)
+        print(hotels)
         return hotels

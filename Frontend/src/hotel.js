@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom'
 import {getToken} from './store/tokenGetter'
 import $ from 'jquery'
 import axios from 'axios'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import './css/userAccount.css'
 
 export default function Hotels(){
@@ -14,8 +14,9 @@ export default function Hotels(){
         console.log('hotel 8: ', token)
 
         const [hotels, setHotels] = useState([])
-        const [count, setCount] = useState(0)
+        const [hotelCounts, setHotelCounts] = useState(0)
         const [addHotelCount, setAddHotelCount] = useState(0)
+        const [currentPage, setCurrentPage] = useState(1)
 
         const updateHotelHandler=(e)=>{
 
@@ -84,15 +85,16 @@ export default function Hotels(){
 
     }
 
-    if(count===0){
-        setCount(1)
+    useEffect(()=>{
         axios
          .get('http://localhost:8000/hotels/view/',
             {
                headers: {"Authorization": 'Bearer '+ token}
             }
             ).then(response=>{
+                console.log('hotel 95: ', response.data)
                 setHotels(response.data.results)
+                setHotelCounts(response.data.count)
             }).catch(error=>{
                 console.log(error.response)
                 if(error.response.status===401){
@@ -100,18 +102,38 @@ export default function Hotels(){
                     navigate('/accounts/login')
                 }
             })
-    }
 
-    const viewCommentsHandler=(e)=>{
-        const hotel_id = e.target.closest('form').id.slice(e.target.closest('form').id.indexOf('_')+1)
-        navigate('/hotels/hotel/comments/view', {state: {hotel_id: hotel_id}, replace: false})
+    }, [navigate])
 
-    }
+    useEffect(()=>{
+        axios
+         .get('http://localhost:8000/hotels/view/',
+            {
+               headers: {"Authorization": 'Bearer '+ token},
+               params: {'page': currentPage}
+            }
+            ).then(response=>{
+                console.log('hotel 95: ', response.data)
+                setHotels(response.data.results)
+                setHotelCounts(response.data.count)
+            }).catch(error=>{
+                console.log(error.response)
+                if(error.response.status===401){
+                    alert('Unauthorized! Please Login')
+                    navigate('/accounts/login')
+                }
+            })
+    }, [currentPage])
+
+     const viewCommentsHandler=(e)=>{
+         const hotel_id = e.target.closest('form').id.slice(e.target.closest('form').id.indexOf('_')+1)
+         navigate('/hotels/hotel/comments/view', {state: {hotel_id: hotel_id}, replace: false})
+     }
+
 
     const viewAvailabilityHandler=(e, hotel_id)=>{
         navigate('/hotels/availabilities/view', {state: {hotel_id: hotel_id}, replace: false})
     }
-
 
     const addHotelHandler=(e)=>{
         if(addHotelCount === 0){
@@ -141,7 +163,7 @@ export default function Hotels(){
                          capacity: $(myDiv).find('#newHotelCap').val(),
                          beds: $(myDiv).find('#newHotelBeds').val(),
                          baths: $(myDiv).find('#newHotelBaths').val(),
-                         owner: localStorage.getItem('user_id')
+                         owner: localStorage.getItem('user')
                         },
                         {headers: {"Authorization": 'Bearer '+ token}}
                         ).then(response=>{
@@ -153,6 +175,18 @@ export default function Hotels(){
                         $(myUl).append(addHotelDiv)
 
                         setAddHotelCount(1)
+        }
+    }
+
+    const previousPageHandler=()=>{
+        if(currentPage > 1){
+            setCurrentPage(currentPage - 1)
+        }
+    }
+
+    const nextPageHandler=()=>{
+        if(currentPage < Math.ceil(hotelCounts / 5)){
+            setCurrentPage(currentPage + 1)
         }
     }
 
@@ -178,6 +212,11 @@ export default function Hotels(){
                   })
                 }
                 <li><button onClick={ addHotelHandler }>Add Hotel</button></li>
+            </ul>
+            <ul className='pagesHandler'>
+                <li><button onClick={previousPageHandler}>Previous Page</button></li>
+                <li>Current Page: {currentPage}</li>
+                <li><button onClick={nextPageHandler}>Next Page</button></li>
             </ul>
       </div>
     }

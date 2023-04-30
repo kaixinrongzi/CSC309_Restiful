@@ -43,8 +43,9 @@ class AddComment(CreateAPIView):
                 return Response({"error": "the hotel does not exist"}, status=status.HTTP_403_FORBIDDEN)
             # check if the user has ever finished living in the hotel
             try:
-                reservation = Reservation.objects.get(guest=user, hotel=hotel, state='F')
-            except:
+                reservations = Reservation.objects.filter(guest=user, hotel=hotel, state='F')
+            except Exception as e:
+                print(e)
                 return Response({"error": "the user has not finished the living in the hotel"}, status=status.HTTP_403_FORBIDDEN)
 
             # find out the property owner

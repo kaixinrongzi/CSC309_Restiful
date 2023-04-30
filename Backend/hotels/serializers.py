@@ -24,7 +24,7 @@ class HotelAvailabilitySerializer(ModelSerializer):
 class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id','rating', 'detail', 'author', 'content_type', 'object_id']
+        fields = ['id','rating', 'detail', 'author', 'receiver', 'content_type', 'object_id']
 
     def create(self, validated_data):
         oi = self.context['request'].data['object_id']
