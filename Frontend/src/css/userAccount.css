@@ -79,7 +79,7 @@ body .userAccount{
 }
 
 /*My Renting Info*/
-.userAccount div.myRenting{
+div.myRenting{
     position: absolute;
     top: calc(0.3 * 70vw * 1.1 + 2rem + 10rem);
     width: 70vw;
@@ -90,23 +90,23 @@ body .userAccount{
     align-content: left;
 }
 
-.userAccount div.myRenting ul{
+div.myRenting ul{
     display: flex;
     flex-direction: row;
     justify-content: space-between
 }
 
-.userAccount div.myRenting ul span.title{
+div.myRenting ul span.title{
     font-size: 2em;
     font-family: "inter";
     font-weight: 600;
 }
 
-.userAccount div.myRenting ul img.arrow{
+div.myRenting ul img.arrow{
     width: 3em;
 }
 
-.userAccount div.myRenting div.rentingInfo{
+div.myRenting div.rentingInfo{
     position: absolute;
     top: 3rem;
     width: 100%;
@@ -122,12 +122,12 @@ body .userAccount{
     align-content: center
 }*/
 
-.userAccount div.myRenting div.rentingInfo img{
+div.myRenting div.rentingInfo img{
     width: calc(70vw * 0.32);
     height: calc(70vw * 0.32 * 0.8);
 }
 
-.userAccount div.myRenting div.rentingInfo p{
+div.myRenting div.rentingInfo p{
     font-size:1em;
     text-align: center
 }
@@ -137,7 +137,7 @@ body .userAccount{
 }
 
 /*My Property Info*/
-.userAccount div.myProperty{
+div.myProperty{
     position: absolute;
     top: calc(0.3 * 70vw * 1.1 + 2rem + 3rem + 20rem + 3rem);
     width: 70vw;
@@ -149,23 +149,23 @@ body .userAccount{
 
 }
 
-.userAccount div.myProperty ul{
+div.myProperty ul{
     display: flex;
     flex-direction: row;
     justify-content: space-between
 }
 
-.userAccount div.myProperty ul span.title{
+div.myProperty ul span.title{
     font-size: 2em;
     font-family: "inter";
     font-weight: 600;
 }
 
-.userAccount div.myProperty ul img.arrow{
+div.myProperty ul img.arrow{
     width: 3em;
 }
 
-.userAccount div.myProperty div.rentingInfo{
+div.myProperty div.rentingInfo{
     position: absolute;
     top: 3rem;
     width: 100%;
@@ -175,16 +175,42 @@ body .userAccount{
 
 }
 
-.userAccount div.myProperty div.rentingInfo img{
+div.myProperty div.rentingInfo img{
     width: calc(70vw * 0.32);
     height: calc(70vw * 0.32 * 0.8);
 }
 
-.userAccount div.myProperty div.rentingInfo p{
+div.myProperty div.rentingInfo p{
     font-size:1em;
     text-align: center
 }
 
-.userAccount div.myProperty div.rentingInfo p:hover{
+div.myProperty div.rentingInfo p:hover{
     text-decoration: underline
+}
+
+/*My PropertyReservation Info*/
+div.myPropertyReservation{
+    position: absolute;
+    top: 15rem;
+    width: 70vw;
+    height: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    align-content: left;
+
+}
+
+/*My Reply Info*/
+div.replyview{
+    position: absolute;
+    top: 15rem;
+    width: 70vw;
+    height: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    align-content: left;
+
 }
