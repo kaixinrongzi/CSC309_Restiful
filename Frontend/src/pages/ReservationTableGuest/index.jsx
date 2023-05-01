@@ -30,7 +30,7 @@ const TableGuest = (props) => {
                                     <button onClick={() => {
                                         alert("You will Cancel the reservation")
                                         props.change(reservation.id, 'PC')
-                                    }}>Approve</button>
+                                    }}>Cancel</button>
                                     <button onClick={() => {
                                         alert("you want to finish the reservation")
                                         props.change(reservation.id, 'F')
