@@ -97,6 +97,10 @@ export default function Search(){
          })
     }
 
+    const bookHandler=(e)=>{
+
+    }
+
     return <main className="searchResults">
           <form onSubmit={search}>
             <label for='search_by_hotel_id'>Search By Hotel ID:</label>
@@ -115,6 +119,7 @@ export default function Search(){
                   searchResults.map((value, index)=>{
                     return <li key={index}>
                         hotel_id: {value.hotel}, start-date: {value.start_date}, end-date: {value.end_date}, price: {value.price}, capacity: {value.capacity}, beds: {value.beds}, baths: {value.baths}
+                       <button onClick={bookHandler}>Book</button>
                        </li>
 
                   })

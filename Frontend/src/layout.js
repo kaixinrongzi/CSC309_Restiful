@@ -30,7 +30,8 @@ export default function Layout(){
                                 <li><NavLink to='/accounts/profile' >My Profile</NavLink></li>
                                 <li><NavLink to='/hotels/view' >My Hotels</NavLink></li>
                                 <li><NavLink to='/hotels/reservations/list/guest' >My Bookings</NavLink></li>
-                                <li><NavLink to='/hotels/reservations/list/host' >History Reservations</NavLink></li>
+                                {/*<li><NavLink to='/hotels/reservations/list/host' >History Reservations</NavLink></li>*/}
+                                <li><NavLink to='/hotels/reservations/view' >History Reservations</NavLink></li>
                                 <li><NavLink to='/hotels/reservations/create' >Create reservation</NavLink></li>
                                 <li><NavLink to='/hotels/notifications/view' >My Notifications</NavLink></li>
                                 <li><NavLink to='/hotels/comments/view' >My Comments</NavLink></li>
