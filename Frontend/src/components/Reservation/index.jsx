@@ -1,12 +1,13 @@
 import {useState, useEffect} from 'react';
+import axios from 'axios';
 
-const Reservation = (hotel_id, price) => {
+const Reservation = (props) => {
     const [hotel, setHotel] = useState([])
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
     const [totalPrice, setTotalPrice] = useState(0)
     const [guests, setGuests] = useState(0)
-
+    const {hotel_id, price} = props
     useEffect(() => {
         if (startDate && endDate && price) {
             const start = new Date(startDate)
@@ -17,33 +18,43 @@ const Reservation = (hotel_id, price) => {
         }
     }, [startDate, endDate, price])
 
-    useEffect(() => {
-        fetch() // fetch the information of reservation
-        .then(response => response.json)
-        .then(json => setHotel(json.data))
-        .catch(error => console.log(error))
-    }, [hotel])
+    // useEffect(() => {
+    //     fetch() // fetch the information of reservation
+    //     .then(response => response.json)
+    //     .then(json => setHotel(json.data))
+    //     .catch(error => console.log(error))
+    // }, [hotel])
 
     const token = localStorage.getItem('token');
 
     const submit = {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': "Bearer" + token
-        },
-        body: JSON.stringify({
-            hotel: hotel_id,
-            start_date: {startDate},
-            end_date: {endDate},
-            state: 'P',
-            price: {price},
-            guests: {guests},
-            guest: localStorage.getItem('user_id'),
-        })
+        hotel: hotel_id,
+        start_date: startDate,
+        end_date: endDate, 
+        guests: guests
+    }
+    const config = {
+        headers: { 'Content-Type': 'application/json',
+                    'Authorization': "Bearer " + token},
     };
+    console.log(submit)
+    console.log("56", startDate)
+
+    function handleSubmit() {
+        axios.post("http://localhost:8000/hotels/reservation/reserve/", JSON.stringify(submit),
+          config)
+          .then(response => {
+            console.log("57", "post successfully")
+            console.log(response);
+          })
+          .catch(error => {
+            console.log('61', "what happening")
+            console.log(error);
+          });
+      }
 
     return <>
+    <main>
     <h1>Reservation</h1>
     <label for='guestNumber'>Number of Guest</label>
     <select name='guestNumber'
@@ -72,10 +83,10 @@ const Reservation = (hotel_id, price) => {
     <p>The total price is {totalPrice}.</p>
     {/* transfer the data to backend */}
     <button type="button"
-            onClick={() => fetch("", submit)
-                            .then(response => response.json)
-                            .then(json => json.data)}>
+            onClick={handleSubmit}>Submit
     </button>
+   
+    </main>
     </>
 }
 export default Reservation
