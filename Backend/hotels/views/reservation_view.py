@@ -177,7 +177,7 @@ class ReservationRequestCancel(generics.UpdateAPIView):
         # create a new notification to hotel owner
         notif_data = {'receiver': reservation_obj.hotel.owner.id,
                       'message': self.request.user.username + 'cancelled his/her booking at your property' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
-                      'content_tye': 8,
+                      'content_type': 8,
                       'object_id': reservation_obj.id}
 
         notif_serializer = NotificationSerializer(data=notif_data)
@@ -217,7 +217,7 @@ class ReservationFinish(generics.UpdateAPIView):
         # create a new notification to hotel owner
         notif_data = {'receiver': reservation_obj.hotel.owner.id,
                       'message': self.request.user.username + 'Finish his/her booking at your property' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
-                      'content_tye': 8,
+                      'content_type': 8,
                       'object_id': reservation_obj.id}
 
         notif_serializer = NotificationSerializer(data=notif_data)
@@ -247,7 +247,7 @@ class ReservationApproveCancel(generics.UpdateAPIView):
         # create a new notification to resident
         notif_data = {'receiver': reservation_obj.guest.id,
                       'message': self.request.user.username + 'approved you cancellation at property ' + str(reservation_obj.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
-                      'content_tye': 8,
+                      'content_type': 8,
                       'object_id': reservation_obj.id}
 
         notif_serializer = NotificationSerializer(data=notif_data)
@@ -279,7 +279,7 @@ class ReservationDenyCancel(generics.UpdateAPIView):
         # create a new notification to resident
         notif_data = {'receiver': reservation_obj.guest.id,
                       'message': self.request.user.username + 'disapproved you cancellation at property ' + str(reservation_obj.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date),
-                      'content_tye': 8,
+                      'content_type': 8,
                       'object_id': reservation_obj.id}
 
         notif_serializer = NotificationSerializer(data=notif_data)
@@ -310,7 +310,7 @@ class ReservationTerminate(generics.UpdateAPIView):
         # create a new notification to resident
         notif_data1 = {'receiver': reservation_obj.guest.id,
                        'message': 'your reservation at hotel ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date) + ' terminated',
-                       'content_tye': 8,
+                       'content_type': 8,
                        'object_id': reservation_obj.id}
 
         notif1_serializer = NotificationSerializer(data=notif_data1)
@@ -322,7 +322,7 @@ class ReservationTerminate(generics.UpdateAPIView):
 
         notif_data2 = {'receiver': reservation_obj.guest.id,
                        'message': str(reservation_obj.guest.id) + ' reservation at ' + str(reservation_obj.hotel.id) + ' from ' + str(reservation_obj.start_date) + ' to ' + str(reservation_obj.end_date) + ' terminated',
-                       'content_tye': 8,
+                       'content_type': 8,
                        'object_id': reservation_obj.id}
 
         notif2_serializer = NotificationSerializer(data=notif_data2)

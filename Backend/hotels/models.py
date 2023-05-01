@@ -172,6 +172,11 @@ class Reservation(models.Model):
             self.state = 'T'
         self.save()
 
+    def finish(self):
+        if self.is_approved:
+            self.state='F'
+            self.save()
+
 
 # class Notification(models.Model):
 #     reciever = models.ForeignKey(MyUser, on_delete=models.CASCADE)

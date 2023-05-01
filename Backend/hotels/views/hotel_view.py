@@ -58,6 +58,13 @@ class UpdateHotel(RetrieveAPIView, UpdateAPIView):
             raise PermissionDenied('You do not have the permission to update the hotel')
         serializer.save()
 
+# view hotel for all client
+class HotelDetail(RetrieveAPIView):
+    serializer_class = HotelSerializer
+
+    def get_object(self):
+        obj = get_object_or_404(Hotel, id=self.kwargs['pk'])
+        return obj
 
 # class AllHotel(ListAPIView):
 #     serializer_class = HotelSerializer
@@ -84,14 +91,12 @@ class SearchHotelAvailability(ListAPIView):
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        print(self.request.query_params)
-        hotel_id = self.request.query_params.get('hotel_id', None)
+        hotel_id = self.request.query_params.get('hotel', None)
         start = self.request.query_params.get('start_date', None)
+        print(start)
         end = self.request.query_params.get('end_date', None)
         max_price = self.request.query_params.get('price', None)
-        print(hotel_id, start, end, max_price)
         query = HotelAvailability.objects.all()
-        print(query)
         obj = HotelAvailability.objects.all().first()
         if start and end:
             query = query.filter(start_date__lte=start)
@@ -123,7 +128,6 @@ class SearchHotel(ListAPIView):
         beds = self.request.query_params.get('beds', None)
         baths = self.request.query_params.get('baths', None)
         order_by = self.request.query_params.get('ordering', None)
-        
         if address:
             query = query.filter(address__icontains=address)
         if capacity:
