@@ -3,7 +3,7 @@ import Table from '../ReservationTable'
 import axios from 'axios';
 import {useDispatch, useSelector} from 'react-redux'
 import TableGuest from '../ReservationTableGuest';
-import './style.css'
+import './style.css';
 import { useNavigate } from 'react-router-dom';
 
 const Reservations = () => {

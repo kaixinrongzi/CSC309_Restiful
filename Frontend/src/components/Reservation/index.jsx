@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import axios from 'axios';
+import './style.css'
 
 const Reservation = (props) => {
     const [hotel, setHotel] = useState([])
