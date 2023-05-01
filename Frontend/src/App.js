@@ -16,6 +16,7 @@ import Hotels from './hotel.js'
 import MyBookings from './bookings.js'
 import Layout from './layout.js'
 import MyPropertyReservations from './propertyreservation.js'
+import Reservation from './components/Reservation'
 import {NotificationViewAll, NotificationView} from './notification.js'
 import {CommentAdd, CommentView, CommentsView, CommentsforHotelView} from './comment.js'
 import {ReplyAdd, ReplyView} from './reply.js'
@@ -33,6 +34,7 @@ function App() {
                 <Route path='hotels/view' element={<Hotels/>}></Route>
                 <Route path='hotels/reservations/list/guest' element={<MyBookings/>}></Route>
                 <Route path='hotels/reservations/list/host' element={<MyPropertyReservations/>}></Route>
+                <Route path='hotels/reservations/create' element={<Reservation hotel_id={8} price={100}/>}></Route>
                 <Route path='hotels/notifications/view' element={<NotificationViewAll/>}></Route>
                 <Route path='hotels/notification/view' element={<NotificationView/>}></Route>
                 <Route path='hotels/comments/view' element={<CommentsView/>}></Route>
