@@ -259,6 +259,17 @@ div main.comments_on_my_hotels{
     align-content: left;
 }
 
+div main.searchResults{
+    position: absolute;
+    top: 10rem;
+    width: 70vw;
+    height: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    align-content: left;
+}
+
 div ul.pagesHandler{
     display: flex;
     flex-direction: row

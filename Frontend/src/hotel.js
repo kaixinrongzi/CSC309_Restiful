@@ -132,7 +132,7 @@ export default function Hotels(){
 
 
     const viewAvailabilityHandler=(e, hotel_id)=>{
-        navigate('/hotels/availabilities/view', {state: {hotel_id: hotel_id}, replace: false})
+        navigate('/hotels/availability/add', {state: {hotel_id: hotel_id}, replace: false})
     }
 
     const addHotelHandler=(e)=>{
