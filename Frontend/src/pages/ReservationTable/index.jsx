@@ -1,6 +1,5 @@
 const Table = (props) => {
     const reservations = props.reservations
-    const change = props.change
     return <>
     <table>
         <thead>

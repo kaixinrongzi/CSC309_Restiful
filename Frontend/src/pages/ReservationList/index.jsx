@@ -113,9 +113,9 @@ const Reservations = () => {
             <option key="A" value="A">Approved</option>
             <option key="Ca" value="Ca">Cancelled</option>
             <option key="D" value="D">Denied</option>
-            <option key="E" value="E">Expired</option>
             <option key="P" value="T">Terminated</option>
-            <option key="P" value="F">Finished</option>
+            <option key="F" value="F">Finished</option>
+            <option key="PC" value="PC">PendingCancel</option>
         </select>
     </p>
     {(query.user_type === 'host')

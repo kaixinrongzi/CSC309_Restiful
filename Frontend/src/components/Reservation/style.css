@@ -4,3 +4,7 @@
 button {
     background-color: aqua;
 }
+main {
+    position: absolute;
+    top: 10px;
+}
