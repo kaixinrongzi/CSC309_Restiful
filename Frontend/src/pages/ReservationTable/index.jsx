@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 const Table = (props) => {
     const reservations = props.reservations
     return <>
@@ -54,6 +55,15 @@ const Table = (props) => {
                                 }}>Terminate</button>
                             </p>
                         )}
+                        {
+                                (reservation.state === 'F') && (
+                                    <p>
+                                        <Link to='/hotels/comment/add'>
+                                            <button>Comment</button>
+                                        </Link>
+                                    </p>
+                                )
+                            }
                         </td>
                     </tr>
             ))}
