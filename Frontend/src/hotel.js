@@ -163,7 +163,7 @@ export default function Hotels(){
                          capacity: $(myDiv).find('#newHotelCap').val(),
                          beds: $(myDiv).find('#newHotelBeds').val(),
                          baths: $(myDiv).find('#newHotelBaths').val(),
-                         owner: localStorage.getItem('user')
+                         owner: localStorage.getItem('user_id')
                         },
                         {headers: {"Authorization": 'Bearer '+ token}}
                         ).then(response=>{
