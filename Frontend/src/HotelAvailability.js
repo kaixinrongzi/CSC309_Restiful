@@ -142,7 +142,7 @@ export default function Hotel_Availability() {
   }
 
   const nextPageHandler=()=>{
-    if(currentPage < Math.ceil(avaiCounts / 5)){
+    if(currentPage < Math.ceil(avaiCounts / 2)){
         setCurrentPage(currentPage + 1)
     }
   }

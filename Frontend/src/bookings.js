@@ -92,7 +92,7 @@ export default function MyBookings(){
     }
 
     const nextPageHandler=()=>{
-        if(currentPage < Math.ceil(bookingCounts / 5)){
+        if(currentPage < Math.ceil(bookingCounts / 2)){
             setCurrentPage(currentPage + 1)
         }
     }

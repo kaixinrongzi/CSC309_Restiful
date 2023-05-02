@@ -84,7 +84,7 @@ function NotificationViewAll(){
     }
 
     const nextPageHandler=()=>{
-        if(currentPage < Math.ceil(notificationCounts / 5)){
+        if(currentPage < Math.ceil(notificationCounts / 2)){
             setCurrentPage(currentPage + 1)
         }
     }

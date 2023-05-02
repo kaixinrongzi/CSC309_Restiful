@@ -54,6 +54,9 @@ class Hotel(models.Model):
     baths = models.IntegerField(validators=[MinValueValidator(0)])
     is_active = models.BooleanField(default=True)
     comments = GenericRelation(Comment, related_query_name='hotel', null=True, blank=True)
+    image1 = models.CharField(max_length=2000, null=True, blank=True)
+    image2 = models.CharField(max_length=2000, null=True, blank=True)
+    image3 = models.CharField(max_length=2000, null=True, blank=True)
 
     def __str__(self):
         return f"{self.name}"

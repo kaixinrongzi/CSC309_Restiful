@@ -185,7 +185,7 @@ export default function Hotels(){
     }
 
     const nextPageHandler=()=>{
-        if(currentPage < Math.ceil(hotelCounts / 5)){
+        if(currentPage < Math.ceil(hotelCounts / 2)){
             setCurrentPage(currentPage + 1)
         }
     }
