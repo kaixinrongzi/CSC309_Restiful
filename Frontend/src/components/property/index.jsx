@@ -1,20 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
+import './style.css'
 
 function Property(props) {
-    const [hotel, setHotel] = useState("")
+    const [hotel, setHotel] = useState("");
     const hotel_id = props.hotel_id
-    const token = localStorage.getItem('token')
-    axios.get(`http://localhost:8000/hotels/${hotel_id}/update/`)
-        // .then(response => response.json())
-        // .then(json => setHotel(json))
+
+    useEffect(() => {
+        axios.get(`http://localhost:8000/hotels/${hotel_id}/view/`)
         .then(response => {
-                            setHotel(response)
-                            console.log(response)
-                        })
+            setHotel(response.data);
+            console.log(response.data);
+        })
         .catch(error => {
-                        console.log(error)
-                    });
+            console.log(error);
+        });
+    }, [])
+    
+    
     return <>
     <main>
     <table>
