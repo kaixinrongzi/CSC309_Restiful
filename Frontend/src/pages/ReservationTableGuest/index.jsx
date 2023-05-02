@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 const TableGuest = (props) => {
 
     
@@ -24,9 +26,9 @@ const TableGuest = (props) => {
                         <td>{reservation.guest}</td>
                         <td>{reservation.hotel}</td>
                         <td>
-                            {(reservation.state === 'A') 
-                            ? 
-                                <p>
+                            {
+                                (reservation.state === 'A') && (
+                                    <p>
                                     <button onClick={() => {
                                         alert("You will Cancel the reservation")
                                         props.change(reservation.id, 'PC')
@@ -35,10 +37,20 @@ const TableGuest = (props) => {
                                         alert("you want to finish the reservation")
                                         props.change(reservation.id, 'F')
                                     }}>Finish</button>
-                                </p>
-                            : 
-                                <></>
+                                    </p>
+                                )
+                             
                             }
+                            {
+                                (reservation.state === 'F') && (
+                                    <p>
+                                        <Link to='/hotels/comment/add'>
+                                            <button>Comment</button>
+                                        </Link>
+                                    </p>
+                                )
+                            }
+                            
                         </td>
                     </tr>
             ))}

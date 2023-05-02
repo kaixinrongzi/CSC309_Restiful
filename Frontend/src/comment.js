@@ -387,13 +387,13 @@ function CommentsView(){
     const nextPageHandler=(e)=>{
         const class_name = e.target.closest('main').className
         if(class_name==='mycomments'){
-            if(currentPage1 < Math.ceil(mycommentCounts / 5)){
+            if(currentPage1 < Math.ceil(mycommentCounts / 2)){
             setCurrentPage1(currentPage1 + 1)}
         }else if(class_name==='comments_on_me'){
-            if(currentPage2 < Math.ceil(commentOnMeCounts / 5)){
+            if(currentPage2 < Math.ceil(commentOnMeCounts / 2)){
             setCurrentPage2(currentPage2 + 1)}
         }else if(class_name==='comments_on_my_hotels'){
-            if(currentPage3 < Math.ceil(commentOnMyHotelsCounts / 5)){
+            if(currentPage3 < Math.ceil(commentOnMyHotelsCounts / 2)){
             setCurrentPage3(currentPage3 + 1)}}
     }
 

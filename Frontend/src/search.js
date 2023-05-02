@@ -59,7 +59,7 @@ export default function Search(){
     }
 
     const nextPageHandler=()=>{
-        if(currentPage < Math.ceil(searchCounts / 5)){
+        if(currentPage < Math.ceil(searchCounts / 2)){
             setCurrentPage(currentPage + 1)
         }
     }

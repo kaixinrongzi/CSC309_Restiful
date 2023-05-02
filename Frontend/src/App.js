@@ -14,6 +14,7 @@ import {LogIn, LogOut} from './login.js'
 import Profile from './profile.js'
 import Hotels from './hotel.js'
 import MyBookings from './bookings.js'
+import HotelDetail from './components/property'
 import Layout from './layout.js'
 import MyPropertyReservations from './propertyreservation.js'
 import Reservation from './components/Reservation/index.jsx'
@@ -35,6 +36,7 @@ function App() {
                 <Route path='accounts/login' element={<LogIn/>}></Route>
                 <Route path='accounts/profile' element={<Profile/>}></Route>
                 <Route path='hotels/view' element={<Hotels/>}></Route>
+                <Route path='hotels/view/detail' element={<HotelDetail hotel_id={15}/>}></Route>
                 <Route path='hotels/reservations/list/guest' element={<MyBookings/>}></Route>
                 <Route path='hotels/reservations/list/host' element={<MyPropertyReservations/>}></Route>
                 <Route path='hotels/reservations/view' element={<Reservations/>}></Route>
